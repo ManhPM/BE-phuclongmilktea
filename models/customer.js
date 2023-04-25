@@ -1,5 +1,7 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Customer extends Model {
     /**
@@ -7,66 +9,27 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
-      Customer.belongsTo(models.Account, {
-        foreignKey: "id_account",
-      });
-
-      Customer.hasMany(models.Order, {
-        foreignKey: "id_customer",
-      });
-
-      // Customer.belongsToMany(models.Food, {
-      //   through: models.Review,
-      //   foreignKey: "id_food",
-      // });
-      Customer.hasMany(models.Order, {
-        foreignKey: "id_customer",
-      });
-      Customer.hasOne(models.Wishlist, {
-        foreignKey: "id_customer",
-      });
+    static associate({Account, Cart, Review, Order}) {
+      this.belongsTo(Account, { foreignKey: "id_account" });
+      this.hasOne(Cart, { foreignKey: "id_customer" });
+      this.hasOne(Review, { foreignKey: "id_customer" });
+      this.hasOne(Order, { foreignKey: "id_customer" });
     }
   }
-  Customer.init(
-    {
-      id_customer: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      email: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-        validate: {
-          isEmail: true,
-        }
-      },
-      phone: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-        validate: {
-          isNumeric: true,
-          len: [10,10]
-        }
-      },
-      address: {
-        type: DataTypes.STRING,
-        unique: true,
-      },
+  Customer.init({
+    id_customer: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      sequelize,
-      modelName: "Customer",
-      timestamps: false,
-    }
-  );
+    name: DataTypes.STRING,
+    email: DataTypes.STRING,
+    phone: DataTypes.STRING,
+    address: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Customer',
+    timestamps: false
+  });
   return Customer;
 };

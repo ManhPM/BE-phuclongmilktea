@@ -3,18 +3,18 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Type extends Model {
+  class Payment_method extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Item}) {
-      this.hasOne(Item, { foreignKey: "id_type" });
+    static associate({Order}) {
+      this.hasOne(Order, { foreignKey: "id_payment" });
     }
   }
-  Type.init({
-    id_type: {
+  Payment_method.init({
+    id_payment: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
@@ -22,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Type',
+    modelName: 'Payment_method',
     timestamps: false
   });
-  return Type;
+  return Payment_method;
 };

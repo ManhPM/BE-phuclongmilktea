@@ -1,5 +1,7 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Role extends Model {
     /**
@@ -7,25 +9,21 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
-      Role.hasOne(models.Account, { foreignKey: "id_role" });
+    static associate({Account}) {
+      this.hasOne(Account, { foreignKey: "id_role" });
     }
   }
-  Role.init(
-    {
-      id_role: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      name: { type: DataTypes.STRING, allowNull: false },
+  Role.init({
+    id_role: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      sequelize,
-      modelName: "Role",
-      timestamps: false,
-    }
-  );
+    name: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Role',
+    timestamps: false,
+  });
   return Role;
 };

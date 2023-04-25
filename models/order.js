@@ -1,5 +1,7 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Order extends Model {
     /**
@@ -7,35 +9,31 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
-      Order.belongsTo(models.Customer, {
-        foreignKey: "id_customer",
-      });
-
-      Order.hasMany(models.Order_detail, {
-        foreignKey: "id_order",
-      });
-      
-      Order.belongsTo(models.Payment, { foreignKey: "id_payment" });
+    static associate({Shipper, Shipping_partner, Customer, Payment_method, Order_detail}) {
+      this.belongsTo(Shipper, { foreignKey: "id_shipper" });
+      this.belongsTo(Shipping_partner, { foreignKey: "id_shipping_partner" });
+      this.belongsTo(Customer, { foreignKey: "id_customer" });
+      this.belongsTo(Payment_method, { foreignKey: "is_payment" });
+      this.hasOne(Order_detail, { foreignKey: "id_order" });
     }
   }
-  Order.init(
-    {
-      id_order: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      datetime: { type: DataTypes.DATE, allowNull: false },
-      description: { type: DataTypes.STRING, allowNull: true },
-      status: { type: DataTypes.INTEGER, allowNull: false },
+  Order.init({
+    id_order: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      sequelize,
-      modelName: "Order",
-      timestamps: false,
-    }
-  );
+    time_order: DataTypes.DATE,
+    time_confirm: DataTypes.DATE,
+    time_expected: DataTypes.DATE,
+    delivery_fee: DataTypes.INTEGER,
+    total: DataTypes.INTEGER,
+    status: DataTypes.INTEGER,
+    description: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Order',
+    timestamps: false
+  });
   return Order;
 };

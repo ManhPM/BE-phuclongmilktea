@@ -1,5 +1,7 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
     /**
@@ -7,66 +9,32 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({Recipe, Cart_detail, Wishlist_detail, Order_detail, Review, Type}) {
+      this.hasOne(Cart_detail, { foreignKey: "id_item" });
+      this.hasOne(Order_detail, { foreignKey: "id_item" });
+      this.hasOne(Wishlist_detail, { foreignKey: "id_item" });
+      this.hasOne(Review, { foreignKey: "id_item" });
+      this.hasOne(Recipe, { foreignKey: "id_item" });
+      this.belongsTo(Type, { foreignKey: "id_type" });
       // define association here
-      Item.hasOne(models.Cart_detail, {
-        foreignKey: "id_item",
-      });
-
-      Item.hasOne(models.Review, {
-        foreignKey: "id_item",
-      });
-
-      Item.hasOne(models.Order_detail, {
-        foreignKey: "id_item",
-      });
-
-      Item.hasOne(models.Wishlist_detail, {
-        foreignKey: "id_item",
-      });
-
-      Item.belongsTo(models.Type, {
-        foreignKey: "id_type",
-      });
     }
   }
-  Item.init(
-    {
-      id_item: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      image: {
-        allowNull: true,
-        type: DataTypes.STRING,
-        defaultValue: "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/3-1.png",
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      price: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-      },
-      description: DataTypes.STRING,
-      energy: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-      },
-      ingredient: DataTypes.STRING,
-      quantity: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      status: { type: DataTypes.INTEGER, allowNull: false },
+  Item.init({
+    id_item: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      sequelize,
-      modelName: "Item",
-      timestamps: false,
-    }
-  );
+    name: DataTypes.STRING,
+    image: DataTypes.STRING,
+    price: DataTypes.STRING,
+    description: DataTypes.STRING,
+    quantity: DataTypes.INTEGER,
+    status: DataTypes.INTEGER
+  }, {
+    sequelize,
+    modelName: 'Item',
+    timestamps: false
+  });
   return Item;
 };

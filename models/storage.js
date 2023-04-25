@@ -3,27 +3,29 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Type extends Model {
+  class Storage extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Item}) {
-      this.hasOne(Item, { foreignKey: "id_type" });
+    static associate({Import_invoice, Export_invoice}) {
+      this.hasOne(Import_invoice, { foreignKey: "id_storage" });
+      this.hasOne(Export_invoice, { foreignKey: "id_storage" });
     }
   }
-  Type.init({
-    id_type: {
+  Storage.init({
+    id_storage: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    description: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Type',
+    modelName: 'Storage',
     timestamps: false
   });
-  return Type;
+  return Storage;
 };

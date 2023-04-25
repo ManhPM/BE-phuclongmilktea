@@ -1,34 +1,36 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Account extends Model {
-    static associate(models) {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate({Staff, Shipper, Customer, Role}) {
+      this.belongsTo(Role, { foreignKey: "id_role" });
+      this.hasOne(Staff, { foreignKey: "id_account" });
+      this.hasOne(Shipper, { foreignKey: "id_account" });
+      this.hasOne(Customer, { foreignKey: "id_account" });
       // define association here
-      Account.belongsTo(models.Role, { foreignKey: "id_role" });
-      Account.hasOne(models.Customer, {
-        foreignKey: "id_account",
-        as: "customer",
-      });
-      Account.hasOne(models.Staff, { foreignKey: "id_account" });
     }
   }
-  Account.init(
-    {
-      id_account: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      password: { type: DataTypes.STRING, allowNull: false },
-      username: { type: DataTypes.STRING, allowNull: false },
-      isActive: DataTypes.BOOLEAN,
-      forgot: DataTypes.STRING,
+  Account.init({
+    id_account: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      sequelize,
-      modelName: "Account",
-      timestamps: false,
-    }
-  );
+    username: DataTypes.STRING,
+    password: DataTypes.STRING,
+    isActive: DataTypes.INTEGER,
+    forgot: DataTypes.INTEGER
+  }, {
+    sequelize,
+    modelName: 'Account',
+    timestamps: false
+  });
   return Account;
 };

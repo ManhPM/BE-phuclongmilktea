@@ -1,5 +1,7 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Order_detail extends Model {
     /**
@@ -7,41 +9,26 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
-      // Order_detail.belongsTo(models.Order, {
-      //   foreignKey: "id_order",
-      //   as: "order",
-      // });
-      Order_detail.belongsTo(models.Item, { foreignKey: "id_item" });
-      Order_detail.belongsTo(models.Order, { foreignKey: "id_order" });
+    static associate({Item, Order}) {
+      this.belongsTo(Item, { foreignKey: "id_item" });
+      this.belongsTo(Order, { foreignKey: "id_order" });
     }
   }
-  Order_detail.init(
-    {
-      // id_order_detail: {
-      //   type: DataTypes.INTEGER,
-      //   autoIncrement: true,
-      //   primaryKey: true,
-      // },
-      id_order: {
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-        references: { model: "Order", key: "id_order" },
-      },
-      id_item: {
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-        references: { model: "Item", key: "id_item" },
-      },
-      quantity: { type: DataTypes.INTEGER, allowNull: false },
-      isReviewed: { type: DataTypes.INTEGER, allowNull: false },
+  Order_detail.init({
+    id_order: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
     },
-    {
-      sequelize,
-      modelName: "Order_detail",
-      timestamps: false,
-    }
-  );
+    id_item: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
+    quantity: DataTypes.INTEGER,
+    isReviewed: DataTypes.INTEGER
+  }, {
+    sequelize,
+    modelName: 'Order_detail',
+    timestamps: false
+  });
   return Order_detail;
 };
