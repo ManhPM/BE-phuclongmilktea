@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     quantity: DataTypes.INTEGER,
-    unit: DataTypes.INTEGER
+    unit: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Ingredient',

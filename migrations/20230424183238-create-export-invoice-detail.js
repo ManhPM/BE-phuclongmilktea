@@ -2,10 +2,10 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Export_invoice_details', {
-      id_ingredient: {
+      id_u_ingredient: {
         allowNull: false,
         primaryKey: true,
-        references: { model: "Ingredients", key: "id_ingredient" },
+        references: { model: "Unprocessed_ingredients", key: "id_u_ingredient" },
         type: Sequelize.INTEGER
       },
       id_e_invoice: {
@@ -22,14 +22,7 @@ module.exports = {
         allowNull:false,
         type: Sequelize.INTEGER
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+ 
     });
   },
   async down(queryInterface, Sequelize) {

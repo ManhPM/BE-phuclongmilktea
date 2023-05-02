@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
-    quantity: DataTypes.INTEGER
+    quantity: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Recipe',

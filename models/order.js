@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(Shipper, { foreignKey: "id_shipper" });
       this.belongsTo(Shipping_partner, { foreignKey: "id_shipping_partner" });
       this.belongsTo(Customer, { foreignKey: "id_customer" });
-      this.belongsTo(Payment_method, { foreignKey: "is_payment" });
+      this.belongsTo(Payment_method, { foreignKey: "id_payment" });
       this.hasOne(Order_detail, { foreignKey: "id_order" });
     }
   }
@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     time_confirm: DataTypes.DATE,
     time_expected: DataTypes.DATE,
     delivery_fee: DataTypes.INTEGER,
+    item_fee: DataTypes.INTEGER,
     total: DataTypes.INTEGER,
     status: DataTypes.INTEGER,
     description: DataTypes.STRING

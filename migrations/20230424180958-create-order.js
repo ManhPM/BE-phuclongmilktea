@@ -41,8 +41,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
+      item_fee: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       total: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       status: {
         type: Sequelize.INTEGER
@@ -50,14 +55,7 @@ module.exports = {
       description: {
         type: Sequelize.STRING
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+ 
     });
   },
   async down(queryInterface, Sequelize) {

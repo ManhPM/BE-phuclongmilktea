@@ -22,11 +22,7 @@ module.exports = {
         allowNull: false
       },
       price: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      description: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false
       },
       quantity: {
@@ -37,14 +33,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 1,
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+ 
     });
   },
   async down(queryInterface, Sequelize) {

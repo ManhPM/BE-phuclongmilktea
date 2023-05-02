@@ -14,14 +14,7 @@ module.exports = {
         references: { model: "Wishlists", key: "id_wishlist" },
         allowNull: false
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+ 
     });
   },
   async down(queryInterface, Sequelize) {

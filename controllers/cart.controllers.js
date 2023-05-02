@@ -265,7 +265,7 @@ const deleteOneItemInCart = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const { id_payment, description } = req.body;
+  const { id_payment, description, id_shipping_partner } = req.body;
   try {
     const info = await Cart.sequelize.query(
       "SELECT C.* FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
@@ -283,11 +283,25 @@ const checkout = async (req, res) => {
     if (itemInCartList.length) {
       const date = new Date();
       date.setHours(date.getHours() + 7);
+      let random = Math.floor(Math.random() * (25000 - 10000 + 1) + 10000);
+      random = Math.round(random / 1000) * 1000;
+      const total = await Cart.sequelize.query(
+        "SELECT SUM(CD.quantity*I.price) as item_fee FROM cart_details as CD, items as I WHERE I.id_item = CD.id_item AND CD.id_cart = :id_cart",
+        {
+          replacements: { id_cart: info[0].id_cart},
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
       const newOrder = await Order.create({
         description,
         id_payment,
-        datetime: date,
+        delivery_fee: random,
+        item_fee: Number(total[0].item_fee),
+        total: Number(total[0].item_fee)+ random,
+        time_order: date,
         id_customer: info[0].id_customer,
+        id_shipping_partner,
         status: 0,
       });
       let i = 0;
@@ -296,7 +310,6 @@ const checkout = async (req, res) => {
           id_order: newOrder.id_order,
           id_item: itemInCartList[i].id_item,
           quantity: itemInCartList[i].quantity,
-          isReviewed: 0,
         });
         await Cart_detail.destroy({
           where: {

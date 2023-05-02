@@ -64,7 +64,35 @@ const loginAdmin = async (req, res) => {
       username,
     },
   });
-  if (account.id_role != 2) {
+  if (account.id_role != 2 && account.id_role != 3) {
+    res.status(400).json({ message: "Tài khoản không có quyền truy cập!" });
+  } else {
+    const isAuth = bcrypt.compareSync(password, account.password);
+    if (isAuth) {
+      const token = jwt.sign({ username: account.username }, "manhpham2k1", {
+        expiresIn: 6 * 60 * 60,
+      });
+      res
+        .status(200)
+        .json({
+          message: "Đăng nhập thành công!",
+          token,
+          expireTime: 6 * 60 * 60,
+        });
+    } else {
+      res.status(400).json({ message: "Sai thông tin đăng nhập!" });
+    }
+  }
+};
+
+const loginShipper = async (req, res) => {
+  const { username, password } = req.body;
+  const account = await Account.findOne({
+    where: {
+      username,
+    },
+  });
+  if (account.id_role != 4) {
     res.status(400).json({ message: "Tài khoản không có quyền truy cập!" });
   } else {
     const isAuth = bcrypt.compareSync(password, account.password);
@@ -87,7 +115,6 @@ const loginAdmin = async (req, res) => {
 
 const login = async (req, res) => {
   const { username, password } = req.body;
-  console.log("username: ",username +" password: ",password);
   const account = await Account.findOne({
     where: {
       username,
@@ -365,6 +392,7 @@ module.exports = {
   // getDetailTaiKhoan,
   login,
   loginAdmin,
+  loginShipper,
   logout,
   createAccountForCustomer,
   // information,

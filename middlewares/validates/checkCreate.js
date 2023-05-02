@@ -45,26 +45,21 @@ const checkCreateReview = (Model) => {
     } else {
       res
         .status(400)
-        .json({ message: "Đơn hàng đã bị huỷ hoặc chưa được xác nhận. Không thể đánh giá!" });
+        .json({
+          message:
+            "Đơn hàng đã bị huỷ hoặc chưa được xác nhận. Không thể đánh giá!",
+        });
     }
   };
 };
 
 const checkItemValue = (Model) => {
   return async (req, res, next) => {
-    const { quantity, price, energy } = req.body;
-    if (quantity > 0) {
-      if (price > 0) {
-        if (energy > 0) {
-          next();
-        } else {
-          res.status(400).json({ message: "Năng lượng phải lớn hơn 0!" });
-        }
-      } else {
-        res.status(400).json({ message: "Giá phải lớn hơn 0!" });
-      }
+    const { price } = req.body;
+    if (price > 0) {
+      next();
     } else {
-      res.status(400).json({ message: "Số lượng phải lớn hơn 0!" });
+      res.status(400).json({ message: "Giá phải lớn hơn 0!" });
     }
   };
 };
