@@ -1,5 +1,5 @@
-const { Item, Order, Order_detail } = require("../models");
-const { QueryTypes } = require("sequelize");
+const { Item, Order, Order_detail, Shipper } = require("../models");
+const { QueryTypes, or } = require("sequelize");
 
 const getAllOrder = async (req, res) => {
   try {
@@ -120,26 +120,38 @@ const receiveOrder = async (req, res) => {
         id_order,
       },
     });
-    if (order.status == 1) {
-      const shipper = await Order.sequelize.query(
-        "SELECT S.* FROM shippers as S, accounts as A WHERE A.username = :username AND S.id_account = A.id_account",
-        {
-          replacements: { username: `${req.username}` },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      const date = new Date();
-      date.setMinutes(date.getMinutes() + 450);
-      order.id_shipper = shipper[0].id_shipper;
-      order.time_expected = date;
-      order.status = 3;
-      await order.save();
-      res.status(200).json({ message: "Nhận đơn thành công!" });
-    } else if(order.status == 3) {
-      order.status = 4;
-      await order.save();
-      res.status(200).json({ message: "Đơn hàng giao thành công!" });
+    const shipper = await Order.sequelize.query(
+      "SELECT S.* FROM shippers as S, accounts as A WHERE A.username = :username AND S.id_account = A.id_account",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    // check shipper có đơn đang giao hay không, không cho nhận đơn khác
+    const isExist = await Order.findOne({
+      where: {
+        id_shipper: shipper[0].id_shipper,
+        status: 3,
+      }
+    });
+    if(!isExist){
+      if (order.status == 1) {
+        const date = new Date();
+        date.setMinutes(date.getMinutes() + 450);
+        order.id_shipper = shipper[0].id_shipper;
+        order.time_expected = date;
+        order.status = 3;
+        await order.save();
+        res.status(200).json({ message: "Nhận đơn thành công!" });
+      } else if(order.status == 3) {
+        order.status = 4;
+        await order.save();
+        res.status(200).json({ message: "Đơn hàng giao thành công!" });
+      }
+    }
+    else {
+      res.status(401).json({ message: "Bạn đã có đơn đang cần giao!" });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -179,7 +191,6 @@ const confirmOrder = async (req, res) => {
       });
       let i = 0;
       let check = 0;
-      let j = 0;
       while (itemListInOrder[i]) {
         const updateQuantity = await Item.findOne({
           where: {
@@ -190,11 +201,12 @@ const confirmOrder = async (req, res) => {
           i++;
         } else {
           check = 1;
+          i = 0;
           break;
         }
       }
       if(check == 0){
-        while (itemListInOrder[j]) {
+        while (itemListInOrder[i]) {
           const updateQuantity = await Item.findOne({
             where: {
               id_item: itemListInOrder[i].id_item,
@@ -203,7 +215,7 @@ const confirmOrder = async (req, res) => {
             updateQuantity.quantity =
               updateQuantity.quantity - itemListInOrder[i].quantity;
             await updateQuantity.save();
-            j++;
+            i++;
         }
         order.status = 1;
         await order.save();

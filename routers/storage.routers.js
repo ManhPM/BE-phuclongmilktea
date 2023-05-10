@@ -1,5 +1,6 @@
 const express = require("express");
 const { getAllStorage } = require("../controllers/storage.controllers.js");
+const { getPositionOfUser } = require("../controllers/test.controllers.js");
 const {authenticate} = require("../middlewares/auth/authenticate.js")
 const storageRouter = express.Router();
 

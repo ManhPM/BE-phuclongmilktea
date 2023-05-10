@@ -83,7 +83,7 @@ const getAllItem = async (req, res) => {
     if (name) {
       if (id_type) {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = id_item AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
           {
             replacements: {
               name: `%${name}%`,

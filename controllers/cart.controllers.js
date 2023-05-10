@@ -6,6 +6,10 @@ const {
   Order_detail,
 } = require("../models");
 const { QueryTypes } = require("sequelize");
+const { Navigator } = require("node-navigator");
+const navigator = new Navigator();
+const storeLat = 10.85025804481258;
+const storeLng = 106.76530384273872;
 
 const getAllItemInCart = async (req, res) => {
   try {
@@ -283,8 +287,6 @@ const checkout = async (req, res) => {
     if (itemInCartList.length) {
       const date = new Date();
       date.setHours(date.getHours() + 7);
-      let random = Math.floor(Math.random() * (25000 - 10000 + 1) + 10000);
-      random = Math.round(random / 1000) * 1000;
       const total = await Cart.sequelize.query(
         "SELECT SUM(CD.quantity*I.price) as item_fee FROM cart_details as CD, items as I WHERE I.id_item = CD.id_item AND CD.id_cart = :id_cart",
         {
@@ -293,10 +295,15 @@ const checkout = async (req, res) => {
           raw: true,
         }
       );
+      let myPos;
+      navigator.geolocation.getCurrentPosition(function(position){
+      myPos = position;
+      });
+      console.log(myPos)
       const newOrder = await Order.create({
         description,
         id_payment,
-        delivery_fee: random,
+        delivery_fee: distance*3000,
         item_fee: Number(total[0].item_fee),
         total: Number(total[0].item_fee)+ random,
         time_order: date,
@@ -327,6 +334,27 @@ const checkout = async (req, res) => {
     res.status(500).json({ message: "Đặt hàng thất bại!" });
   }
 };
+
+// Hàm hỗ trợ tính khoảng cách
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2-lat1);  // deg2rad below
+  const dLon = deg2rad(lon2-lon1); 
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  const distance = R * c; // Distance in km
+  return distance;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+
+
 
 module.exports = {
   getAllItemInCart,
