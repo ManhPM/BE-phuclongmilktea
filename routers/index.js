@@ -12,6 +12,7 @@ const { providerRouter } = require("./provider.routers");
 const { importinvoiceRouter } = require("./importinvoice.routers");
 const { exportinvoiceRouter } = require("./exportinvoice.routers");
 const { ingredientRouter } = require("./ingredient.routers");
+const { unprocessedIngredientRouter } = require("./unprocessedingredient.routers");
 const rootRouter = express.Router();
 
 rootRouter.use("/items", itemRouter);
@@ -27,6 +28,7 @@ rootRouter.use("/reviews", reviewRouter);
 rootRouter.use("/importinvoices", importinvoiceRouter);
 rootRouter.use("/exportinvoices", exportinvoiceRouter);
 rootRouter.use("/ingredients", ingredientRouter);
+rootRouter.use("/unprocessedingredients", unprocessedIngredientRouter);
 
 module.exports = {
     rootRouter,

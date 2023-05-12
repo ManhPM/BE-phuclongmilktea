@@ -128,14 +128,6 @@ const receiveOrder = async (req, res) => {
         raw: true,
       }
     );
-    // check shipper có đơn đang giao hay không, không cho nhận đơn khác
-    const isExist = await Order.findOne({
-      where: {
-        id_shipper: shipper[0].id_shipper,
-        status: 3,
-      }
-    });
-    if(!isExist){
       if (order.status == 1) {
         const date = new Date();
         date.setMinutes(date.getMinutes() + 450);
@@ -149,10 +141,6 @@ const receiveOrder = async (req, res) => {
         await order.save();
         res.status(200).json({ message: "Đơn hàng giao thành công!" });
       }
-    }
-    else {
-      res.status(401).json({ message: "Bạn đã có đơn đang cần giao!" });
-    }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

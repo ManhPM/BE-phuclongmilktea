@@ -1,10 +1,10 @@
 const express = require("express");
-const { getAllProvider } = require("../controllers/provider.controllers.js");
+const { getAllUnprocessedIngredient } = require("../controllers/unprocessedingredient.controllers.js");
 const {authenticate} = require("../middlewares/auth/authenticate.js")
-const providerRouter = express.Router();
+const unprocessedIngredientRouter = express.Router();
 
-providerRouter.get("/", getAllProvider);
+unprocessedIngredientRouter.get("/", getAllUnprocessedIngredient);
 
 module.exports = {
-    providerRouter,
+    unprocessedIngredientRouter,
 }

@@ -287,6 +287,7 @@ const checkout = async (req, res) => {
     if (itemInCartList.length) {
       const date = new Date();
       date.setHours(date.getHours() + 7);
+      const random = Math.floor(Math.random() * (15 - 1 + 1) + 1)
       const total = await Cart.sequelize.query(
         "SELECT SUM(CD.quantity*I.price) as item_fee FROM cart_details as CD, items as I WHERE I.id_item = CD.id_item AND CD.id_cart = :id_cart",
         {
@@ -295,15 +296,11 @@ const checkout = async (req, res) => {
           raw: true,
         }
       );
-      let myPos;
-      navigator.geolocation.getCurrentPosition(function(position){
-      myPos = position;
-      });
-      console.log(myPos)
+      console.log(random)
       const newOrder = await Order.create({
         description,
         id_payment,
-        delivery_fee: distance*3000,
+        delivery_fee: random*3000,
         item_fee: Number(total[0].item_fee),
         total: Number(total[0].item_fee)+ random,
         time_order: date,

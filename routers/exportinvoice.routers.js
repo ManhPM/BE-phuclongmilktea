@@ -5,7 +5,7 @@ const {authenticate} = require("../middlewares/auth/authenticate.js")
 const exportinvoiceRouter = express.Router();
 
 exportinvoiceRouter.get("/", authenticate, authorize(["Admin"]), getAllExportInvoice);
-exportinvoiceRouter.get("/:id_i_invoice", authenticate, authorize(["Admin"]), getAllItemInExportInvoice);
+exportinvoiceRouter.get("/:id_e_invoice", authenticate, authorize(["Admin"]), getAllItemInExportInvoice);
 
 module.exports = {
     exportinvoiceRouter,
