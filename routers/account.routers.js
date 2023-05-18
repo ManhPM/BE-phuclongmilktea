@@ -1,6 +1,6 @@
 const express = require("express");
 const {Account} = require("../models")
-const {login, logout, createAccountForCustomer, changePassword, forgotPassword, loginAdmin, verify, accessForgotPassword, loginShipper, createAccountForShipper} = require("../controllers/account.controllers");
+const {login, logout, createAccountForCustomer, changePassword, forgotPassword, loginAdmin, verify, accessForgotPassword, loginShipper, createAccountForShipper, loginStaff} = require("../controllers/account.controllers");
 const { checkExistAccount } = require("../middlewares/validates/checkExist");
 const { checkCreateAccount } = require("../middlewares/validates/checkCreate");
 const {authenticate} = require("../middlewares/auth/authenticate.js")
@@ -8,6 +8,7 @@ const {authorize} = require("../middlewares/auth/authorize.js")
 const accountRouter = express.Router();
 
 accountRouter.post("/login", checkExistAccount(Account), login);
+accountRouter.post("/staff/login", checkExistAccount(Account), loginStaff);
 accountRouter.post("/admin/login", checkExistAccount(Account), loginAdmin);
 accountRouter.post("/shipper/login", checkExistAccount(Account), loginShipper);
 accountRouter.get("/logout", authenticate, logout);

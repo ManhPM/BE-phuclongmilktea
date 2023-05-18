@@ -253,6 +253,18 @@ module.exports = {
         id_u_ingredient: 5,
         quantity: 1,
       },
+{ id_ingredient: 13, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 13, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 13, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 14, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 14, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 14, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 15, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 15, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 15, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 16, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 16, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 16, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 17, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 17, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 17, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 18, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 18, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 18, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 19, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 19, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 19, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 20, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 20, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 20, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 21, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 21, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 21, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 22, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 22, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 22, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 23, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 23, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 23, id_u_ingredient: 26, quantity: 1 },
+{ id_ingredient: 24, id_u_ingredient: 22, quantity: 1 } , { id_ingredient: 24, id_u_ingredient: 42, quantity: 1 } , { id_ingredient: 24, id_u_ingredient: 26, quantity: 1 }
     ]);
   },
 

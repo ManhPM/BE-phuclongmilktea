@@ -5,9 +5,11 @@ module.exports = {
     return queryInterface.bulkInsert("Storages", [
       {
         name: "Kho 1",
+        id_store: 1,
       },
       {
         name: "Kho 2",
+        id_store: 2,
       },
     ]);
   },

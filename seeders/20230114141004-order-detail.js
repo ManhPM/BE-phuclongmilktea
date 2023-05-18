@@ -42,6 +42,46 @@ module.exports = {
         id_item: 4,
         quantity: 1,
       },
+      {
+        id_order: 4,
+        id_item: 3,
+        quantity: 1,
+      },
+      {
+        id_order: 4,
+        id_item: 4,
+        quantity: 1,
+      },
+      {
+        id_order: 5,
+        id_item: 3,
+        quantity: 1,
+      },
+      {
+        id_order: 5,
+        id_item: 4,
+        quantity: 1,
+      },
+      {
+        id_order: 6,
+        id_item: 3,
+        quantity: 1,
+      },
+      {
+        id_order: 6,
+        id_item: 4,
+        quantity: 1,
+      },
+      {
+        id_order: 7,
+        id_item: 3,
+        quantity: 1,
+      },
+      {
+        id_order: 7,
+        id_item: 4,
+        quantity: 1,
+      },
     ]);
   },
 

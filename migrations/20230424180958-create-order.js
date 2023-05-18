@@ -13,6 +13,11 @@ module.exports = {
         references: { model: "Customers", key: "id_customer" },
         allowNull: false
       },
+      id_store: {
+        type: Sequelize.INTEGER,
+        references: { model: "Stores", key: "id_store" },
+        allowNull: false
+      },
       id_payment: {
         type: Sequelize.INTEGER,
         references: { model: "Payment_methods", key: "id_payment" },

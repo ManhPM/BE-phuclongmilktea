@@ -15,6 +15,7 @@ module.exports = {
       {
         id_customer: 1,
         id_payment: 1,
+        id_store: 1,
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 25000,
@@ -25,6 +26,7 @@ module.exports = {
       {
         id_customer: 1,
         id_payment: 3,
+        id_store: 1,
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 25000,
@@ -35,6 +37,7 @@ module.exports = {
       {
         id_customer: 1,
         id_payment: 2,
+        id_store: 1,
         id_shipping_partner: 2,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 25000,
@@ -45,6 +48,7 @@ module.exports = {
       {
         id_customer: 1,
         id_payment: 1,
+        id_store: 1,
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 0,
@@ -55,6 +59,7 @@ module.exports = {
       {
         id_customer: 1,
         id_payment: 1,
+        id_store: 2,
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 0,
@@ -65,6 +70,7 @@ module.exports = {
       {
         id_customer: 1,
         id_payment: 1,
+        id_store: 2,
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 0,
@@ -75,6 +81,7 @@ module.exports = {
       {
         id_customer: 1,
         id_payment: 1,
+        id_store: 2,
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 0,
