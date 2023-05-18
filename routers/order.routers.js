@@ -10,8 +10,8 @@ orderRouter.get("/receive/:id_order", authenticate, authorize(["Shipper"]), rece
 orderRouter.get("/detail/:id_order", getAllItemInOrder);
 orderRouter.get("/confirm/:id_order", authenticate, authorize(["Nhân viên"]), confirmOrder);
 orderRouter.get("/cancel/:id_order", authenticate, authorize(["Nhân viên","Khách hàng"]), cancelOrder);
-// orderRouter.get("/thongke", authenticate, authorize(["Admin"]), thongKeSanPham);
-// orderRouter.get("/thongkedonhang", authenticate, authorize(["Admin"]), thongKeDonHang);
+orderRouter.get("/thongkesanpham", authenticate, authorize(["Admin"]), thongKeSanPham);
+orderRouter.get("/thongkedonhang", authenticate, authorize(["Admin"]), thongKeDonHang);
 
 
 module.exports = {

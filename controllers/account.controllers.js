@@ -25,11 +25,11 @@ const createAccountForCustomer = async (req, res) => {
       customer.id_account = newAccount.id_account;
       await customer.save();
 
-      const newCart = await Cart.create({
+      await Cart.create({
         id_customer: customer.id_customer,
       });
 
-      const newWishList = await Wishlist.create({
+      await Wishlist.create({
         id_customer: customer.id_customer,
       });
     } else {
@@ -40,16 +40,47 @@ const createAccountForCustomer = async (req, res) => {
         phone,
         address,
       });
-      const newCart = await Cart.create({
+      await Cart.create({
         id_customer: newCustomer.id_customer,
       });
-      const newWishList = await Wishlist.create({
+      await Wishlist.create({
         id_customer: newCustomer.id_customer,
       });
       res.status(200).json({
         message: "Đăng ký thành công!",
       });
     }
+  } catch (error) {
+    res.status(500).json({
+      message: "Đăng ký thất bại!",
+    });
+  }
+};
+
+const createAccountForShipper = async (req, res) => {
+  const { username, password, name, email, phone, address, id_shipping_partner, description } = req.body;
+  try {
+    //tạo ra một chuỗi ngẫu nhiên
+    const salt = bcrypt.genSaltSync(10);
+    //mã hoá salt + password
+    const hashPassword = bcrypt.hashSync(password, salt);
+    const newAccount = await Account.create({
+      username,
+      id_role: 4,
+      password: hashPassword,
+    });
+      await Shipper.create({
+        id_account: newAccount.id_account,
+        name,
+        email,
+        phone,
+        address,
+        description,
+        id_shipping_partner
+      });
+      res.status(200).json({
+        message: "Đăng ký thành công!",
+      });
   } catch (error) {
     res.status(500).json({
       message: "Đăng ký thất bại!",
@@ -352,4 +383,5 @@ module.exports = {
   // formlogin,
   verify,
   accessForgotPassword,
+  createAccountForShipper,
 };

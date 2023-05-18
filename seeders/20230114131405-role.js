@@ -16,13 +16,16 @@ module.exports = {
         name: "Khách hàng",
       },
       {
-        name: "Admin",
+        name: "Quản lý",
       },
       {
         name: "Nhân viên"
       },
       {
         name: "Shipper"
+      },
+      {
+        name: "Admin"
       },
     ]);
   },

@@ -4,12 +4,9 @@ const {
   Item,
   Order,
   Order_detail,
+  Store
 } = require("../models");
 const { QueryTypes } = require("sequelize");
-const { Navigator } = require("node-navigator");
-const navigator = new Navigator();
-const storeLat = 10.85025804481258;
-const storeLng = 106.76530384273872;
 
 const getAllItemInCart = async (req, res) => {
   try {
@@ -269,7 +266,7 @@ const deleteOneItemInCart = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const { id_payment, description, id_shipping_partner } = req.body;
+  const { id_payment, description, id_shipping_partner, userLat, userLng } = req.body;
   try {
     const info = await Cart.sequelize.query(
       "SELECT C.* FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
@@ -285,9 +282,12 @@ const checkout = async (req, res) => {
       },
     });
     if (itemInCartList.length) {
+      const store = await Store.findOne();
       const date = new Date();
       date.setHours(date.getHours() + 7);
-      const random = Math.floor(Math.random() * (15 - 1 + 1) + 1)
+      const storeLat = store.storeLat;
+      const storeLng = store.storeLng;
+      const random = getDistanceFromLatLonInKm(userLat, userLng, storeLat, storeLng);
       const total = await Cart.sequelize.query(
         "SELECT SUM(CD.quantity*I.price) as item_fee FROM cart_details as CD, items as I WHERE I.id_item = CD.id_item AND CD.id_cart = :id_cart",
         {
@@ -296,7 +296,6 @@ const checkout = async (req, res) => {
           raw: true,
         }
       );
-      console.log(random)
       const newOrder = await Order.create({
         description,
         id_payment,
@@ -337,11 +336,10 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
   const R = 6371; // Radius of the earth in km
   const dLat = deg2rad(lat2-lat1);  // deg2rad below
   const dLon = deg2rad(lon2-lon1); 
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
     Math.sin(dLon/2) * Math.sin(dLon/2)
-    ; 
+    ;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
   const distance = R * c; // Distance in km
   return distance;

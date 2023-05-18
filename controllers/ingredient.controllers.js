@@ -1,6 +1,38 @@
 const { Ingredient } = require("../models");
 const { QueryTypes } = require("sequelize");
 
+const createIngredient = async (req, res) => {
+  const {name, unit} = req.body
+  try {
+    await Ingredient.create({
+      name,
+      unit,
+      quantity: 0
+    });
+    res.status(200).json({message: "Tạo mới thành công!"});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
+const updateIngredient = async (req, res) => {
+  const {id_ingredient} = req.params
+  const {name, unit} = req.body
+  try {
+    const update = await Ingredient.findOne({
+      where: {
+        id_ingredient
+      }
+    });
+    update.name = name
+    update.unit = unit
+    await update.save();
+    res.status(200).json({message: "Cập nhật thành công!"});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 const getAllIngredient = async (req, res) => {
   try {
     const itemList = await Ingredient.findAll({});
@@ -66,5 +98,7 @@ const processingIngredient = async (req, res) => {
 
 module.exports = {
     getAllIngredient,
-    processingIngredient
+    processingIngredient,
+    createIngredient,
+    updateIngredient
 };
