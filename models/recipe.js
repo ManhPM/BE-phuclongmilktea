@@ -9,9 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Ingredient, Item}) {
+    static associate({Ingredient, Item, Store}) {
       this.belongsTo(Ingredient, { foreignKey: "id_ingredient" });
       this.belongsTo(Item, { foreignKey: "id_item" });
+      this.belongsTo(Store, { foreignKey: "id_store" });
     }
   }
   Recipe.init({
@@ -20,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     id_item: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
+    id_store: {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },

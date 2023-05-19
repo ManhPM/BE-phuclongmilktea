@@ -1,13 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Recipe_ingredients', {
-      id_ingredient: {
-        allowNull: false,
-        primaryKey: true,
-        references: { model: "Ingredients", key: "id_ingredient" },
-        type: Sequelize.INTEGER
-      },
+    await queryInterface.createTable('Unprocessed_ingredient_stores', {
       id_store: {
         allowNull: false,
         primaryKey: true,
@@ -21,12 +15,11 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       quantity: {
-        type: Sequelize.FLOAT,
-        allowNull: false
+        type: Sequelize.INTEGER
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Recipe_ingredients');
+    await queryInterface.dropTable('Unprocessed_ingredient_stores');
   }
 };

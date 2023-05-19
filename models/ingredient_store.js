@@ -3,20 +3,20 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Recipe_ingredient extends Model {
+  class Ingredient_store extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Unprocessed_ingredient, Ingredient, Store}) {
+    static associate({Ingredient, Store}) {
       this.belongsTo(Ingredient, { foreignKey: "id_ingredient" });
-      this.belongsTo(Unprocessed_ingredient, { foreignKey: "id_u_ingredient" });
       this.belongsTo(Store, { foreignKey: "id_store" });
+      // define association here
     }
   }
-  Recipe_ingredient.init({
-    id_u_ingredient: {
+  Ingredient_store.init({
+    id_store: {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
@@ -24,15 +24,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
-    id_store: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-    },
-    quantity: DataTypes.FLOAT
+    quantity: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Recipe_ingredient',
-    timestamps: false
+    modelName: 'Ingredient_store',
+    timestamps: false,
   });
-  return Recipe_ingredient;
+  return Ingredient_store;
 };

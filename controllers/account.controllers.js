@@ -209,7 +209,7 @@ const login = async (req, res) => {
       message: "Đăng nhập thành công!",
       token,
       userInfo: customer,
-      expireTime: 60 * 60 * 24,
+      expireTime: 30 * 60 * 60 * 24,
     });
   } else {
     res.status(400).json({ message: "Sai thông tin đăng nhập!" });
@@ -385,38 +385,15 @@ const accessForgotPassword = async (req, res, next) => {
   }
 };
 
-// const information = async (req, res) => {
-//   const { username } = req;
-//   const infors = await Account.sequelize.query(
-//     "SELECT NV.*, PQ.tenQuyen FROM taikhoans as TK, nhanviens as NV, phanquyens as PQ WHERE TK.maNV = NV.maNV AND NV.maQuyen = PQ.maQuyen AND TK.username = :username",
-//     {
-//       type: QueryTypes.SELECT,
-//       replacements: {
-//         username: username,
-//       },
-//     }
-//   );
-//   res.status(200).json("infor", {
-//     infors: infors[0],
-//   });
-// };
-
 module.exports = {
-  // getDetailTaiKhoan,
   login,
   loginStaff,
   loginShipper,
   loginAdmin,
   logout,
   createAccountForCustomer,
-  // information,
-  // create,
   changePassword,
-  // edit,
-  // logout,
   forgotPassword,
-  // getforgot,
-  // formlogin,
   verify,
   accessForgotPassword,
   createAccountForShipper,

@@ -8,11 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_store: {
-        type: Sequelize.INTEGER,
-        references: { model: "Stores", key: "id_store" },
-        allowNull: false
-      },
       id_type: {
         type: Sequelize.INTEGER,
         references: { model: "Types", key: "id_type" },
@@ -27,10 +22,6 @@ module.exports = {
         allowNull: false
       },
       price: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      quantity: {
         type: Sequelize.INTEGER,
         allowNull: false
       },

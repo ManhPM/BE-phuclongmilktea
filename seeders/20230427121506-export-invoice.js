@@ -4,7 +4,6 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Export_invoices", [
       {
-        id_storage: 1,
         id_staff: 1,
         datetime: "2023-01-23 06:30:00",
         description: "Xuất hàng",
