@@ -20,7 +20,7 @@ const createPaymentMethod = async (req, res) => {
 };
 
 const updatePaymentMethod = async (req, res) => {
-  const id_payment = req.params
+  const {id_payment} = req.params
   const {name} = req.body
   try {
     const update = await Payment_method.findOne({

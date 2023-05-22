@@ -68,6 +68,20 @@ module.exports = {
         isActive: 1,
         forgot: 0,
       },
+      {
+        id_role: 2,
+        username: "manager1",
+        password: "$2a$10$pVN6f.l9WXqsQxifG89kTOewLKmN6BxXjFoqIUra5MIBcc6Z8yhtW",
+        isActive: 1,
+        forgot: 0,
+      },
+      {
+        id_role: 2,
+        username: "manager2",
+        password: "$2a$10$pVN6f.l9WXqsQxifG89kTOewLKmN6BxXjFoqIUra5MIBcc6Z8yhtW",
+        isActive: 1,
+        forgot: 0,
+      },
     ]);
   },
 

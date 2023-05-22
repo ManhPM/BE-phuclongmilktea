@@ -4,8 +4,8 @@ const { QueryTypes } = require("sequelize");
 const createType = async (req, res) => {
   const { name } = req.body
   try {
-      await Type.create({ name, status: 1 })
-      res.status(201).json({message: "Tạo mới  thành công!"})
+      await Type.create({ name })
+      res.status(201).json({message: "Tạo mới thành công!"})
   } catch (error) {
       res.status(500).json({message: "Đã có lỗi xảy ra!"})
   }
@@ -31,7 +31,7 @@ const updateType = async (req, res) => {
 const getAllType = async (req, res) => {
   try {
     const typeList = await Type.sequelize.query(
-      "SELECT T.*, COUNT(I.id_item) as quantity FROM types as T, items as I WHERE I.id_type = T.id_type group by T.id_type",
+      "SELECT T.*, (SELECT COUNT(id_item) FROM items WHERE id_type = T.id_type) as quantity FROM types as T group by T.id_type",
       {
         type: QueryTypes.SELECT,
         raw: true,

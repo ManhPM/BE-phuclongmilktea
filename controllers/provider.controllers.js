@@ -20,7 +20,7 @@ const createProvider = async (req, res) => {
 };
 
 const updateProvider = async (req, res) => {
-  const id_provider = req.params
+  const {id_provider} = req.params
   const {name, phone, address} = req.body
   try {
     const update = await Provider.findOne({

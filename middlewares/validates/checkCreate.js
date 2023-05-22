@@ -32,6 +32,22 @@ const checkCreateItem = (Model) => {
   };
 };
 
+const checkCreateType = (Model) => {
+  return async (req, res, next) => {
+    const { name } = req.body;
+    const item = await Model.findOne({
+      where: {
+        name,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Loại hàng đã tồn tại!" });
+    }
+  };
+};
+
 const checkCreateReview = (Model) => {
   return async (req, res, next) => {
     const { id_order } = req.query;
@@ -53,6 +69,86 @@ const checkCreateReview = (Model) => {
   };
 };
 
+const checkCreateProvider = (Model) => {
+  return async (req, res, next) => {
+    const { name, phone } = req.body;
+    const item = await Model.findOne({
+      where: {
+        name,
+        phone,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Nhà cung cấp đã tồn tại!" });
+    }
+  };
+};
+const checkCreateStore = (Model) => {
+  return async (req, res, next) => {
+    const { name, phone, address, email } = req.body;
+    const item = await Model.findOne({
+      where: {
+        name,
+        address,
+        phone,
+        email
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Cửa hàng đã tồn tại!" });
+    }
+  };
+};
+const checkCreatePayment = (Model) => {
+  return async (req, res, next) => {
+    const { name } = req.body;
+    const item = await Model.findOne({
+      where: {
+        name,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Phương thức thanh toán đã tồn tại!" });
+    }
+  };
+};
+const checkCreateUnprocessedIngredient = (Model) => {
+  return async (req, res, next) => {
+    const { name } = req.body;
+    const item = await Model.findOne({
+      where: {
+        name,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Nguyên liệu thô đã tồn tại!" });
+    }
+  };
+};
+const checkCreateIngredient = (Model) => {
+  return async (req, res, next) => {
+    const { name } = req.body;
+    const item = await Model.findOne({
+      where: {
+        name,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Nguyên liệu đã tồn tại!" });
+    }
+  };
+};
+
 const checkItemValue = (Model) => {
   return async (req, res, next) => {
     const { price } = req.body;
@@ -69,4 +165,10 @@ module.exports = {
   checkCreateItem,
   checkItemValue,
   checkCreateReview,
+  checkCreateType,
+  checkCreateProvider,
+  checkCreateStore,
+  checkCreatePayment,
+  checkCreateUnprocessedIngredient,
+  checkCreateIngredient,
 };

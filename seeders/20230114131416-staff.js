@@ -56,6 +56,28 @@ module.exports = {
         address: "Đồng Nai",
         description: "Nhân viên cửa hàng 2",
       },
+      {
+        id_account: 9,
+        id_store: 1,
+        name: "Phạm Minh Mạnh",
+        gender: "Nữ",
+        birthday: "2001-01-11",
+        email: "phammanhbeo20014@gmail.com",
+        phone: "0966123123",
+        address: "Đồng Nai",
+        description: "Quản lý cửa hàng 1",
+      },
+      {
+        id_account: 10,
+        id_store: 2,
+        name: "Phạm Minh Mạnh",
+        gender: "Nữ",
+        birthday: "2001-01-11",
+        email: "phammanhbeo20014@gmail.com",
+        phone: "0966123123",
+        address: "Đồng Nai",
+        description: "Quản lý cửa hàng 2",
+      },
     ]);
   },
 
