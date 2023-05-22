@@ -12,9 +12,9 @@ const getAllExportInvoice = async (req, res) => {
           raw: true,
         }
     );
-    if(info[0].id_role == 2){
+    if(info[0].id_role == 5){
         const exportInvoiceList = await Export_invoice.sequelize.query(
-            "SELECT EI.*, SO.name as name_storage, SA.name as name_staff FROM export_invoices AS EI, storages as SO, staffs as SA WHERE SA.id_staff = EI.id_staff AND EI.id_storage = SO.id_storage",
+            "SELECT EI.*, SA.name as name_staff FROM export_invoices AS EI, staffs as SA WHERE SA.id_staff = EI.id_staff ",
             {
               type: QueryTypes.SELECT,
               raw: true,
@@ -32,7 +32,7 @@ const getAllExportInvoice = async (req, res) => {
             }
           );
         const exportInvoiceList = await Export_invoice.sequelize.query(
-            "SELECT EI.*, SO.name as name_storage, SA.name as name_staff FROM export_invoices AS EI, storages as SO, staffs as SA WHERE SA.id_staff = EI.id_staff AND EI.id_storage = SO.id_storage AND EI.id_staff = :id_staff",
+            "SELECT EI.*, SA.name as name_staff FROM export_invoices AS EI, staffs as SA WHERE SA.id_staff = EI.id_staff  AND EI.id_staff = :id_staff",
             {
               replacements: { id_staff: staff[0].id_staff },
               type: QueryTypes.SELECT,
@@ -58,7 +58,7 @@ const getAllItemInExportInvoice = async (req, res) => {
       }
     );
     const exportinvoice = await Export_invoice.sequelize.query(
-      "SELECT EI.*, (SELECT SUM(unit_price*quantity) FROM export_invoice_details WHERE id_e_invoice = EI.id_e_invoice) as total, SO.name as name_storage, SA.name as name_staff FROM export_invoices as EI, storages as SO, staffs as SA WHERE SA.id_staff = EI.id_staff AND EI.id_storage = SO.id_storage AND EI.id_e_invoice = :id_e_invoice",
+      "SELECT EI.*, (SELECT SUM(unit_price*quantity) FROM export_invoice_details WHERE id_e_invoice = EI.id_e_invoice) as total, SA.name as name_staff FROM export_invoices as EI, staffs as SA WHERE SA.id_staff = EI.id_staff  AND EI.id_e_invoice = :id_e_invoice",
       {
         replacements: { id_e_invoice },
         type: QueryTypes.SELECT,

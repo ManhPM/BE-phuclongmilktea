@@ -15,7 +15,6 @@ const createUnprocessedIngredient= async (req, res) => {
     await Unprocessed_ingredient.create({
       name,
       unit,
-      quantity: 0
     });
     res.status(200).json({message: "Tạo mới thành công!"});
   } catch (error) {

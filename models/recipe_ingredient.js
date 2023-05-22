@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate({Unprocessed_ingredient, Ingredient, Store}) {
       this.belongsTo(Ingredient, { foreignKey: "id_ingredient" });
       this.belongsTo(Unprocessed_ingredient, { foreignKey: "id_u_ingredient" });
-      this.belongsTo(Store, { foreignKey: "id_store" });
     }
   }
   Recipe_ingredient.init({
@@ -21,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     id_ingredient: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-    },
-    id_store: {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },

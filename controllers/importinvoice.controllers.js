@@ -12,9 +12,9 @@ const getAllImportInvoice = async (req, res) => {
           raw: true,
         }
     );
-    if(info[0].id_role == 2){
+    if(info[0].id_role == 5){
         const importInvoiceList = await Import_invoice.sequelize.query(
-            "SELECT II.*, SO.name as name_storage, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, storages as SO, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_storage = SO.id_storage AND II.id_provider = P.id_provider",
+            "SELECT II.*, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider",
             {
               type: QueryTypes.SELECT,
               raw: true,
@@ -32,7 +32,7 @@ const getAllImportInvoice = async (req, res) => {
             }
           );
         const importInvoiceList = await Import_invoice.sequelize.query(
-            "SELECT II.*, SO.name as name_storage, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, storages as SO, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_storage = SO.id_storage AND II.id_provider = P.id_provider AND II.id_staff = :id_staff",
+            "SELECT II.*, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider AND II.id_staff = :id_staff",
             {
               replacements: { id_staff: staff[0].id_staff },
               type: QueryTypes.SELECT,
@@ -58,7 +58,7 @@ const getAllItemInImportInvoice = async (req, res) => {
       }
     );
     const importinvoice = await Import_invoice.sequelize.query(
-      "SELECT II.*, (SELECT SUM(unit_price*quantity) FROM import_invoice_details WHERE id_i_invoice = II.id_i_invoice) as total, SO.name as name_storage, SA.name as name_staff, P.name as name_provider FROM import_invoices as II, providers as P, storages as SO, staffs as SA WHERE SA.id_staff = II.id_staff AND II.id_storage = SO.id_storage AND P.id_provider = II.id_provider AND II.id_i_invoice = :id_i_invoice",
+      "SELECT II.*, (SELECT SUM(unit_price*quantity) FROM import_invoice_details WHERE id_i_invoice = II.id_i_invoice) as total, SA.name as name_staff, P.name as name_provider FROM import_invoices as II, providers as P, staffs as SA WHERE SA.id_staff = II.id_staff AND P.id_provider = II.id_provider AND II.id_i_invoice = :id_i_invoice",
       {
         replacements: { id_i_invoice },
         type: QueryTypes.SELECT,

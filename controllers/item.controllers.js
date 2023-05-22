@@ -1,4 +1,4 @@
-const { Item, Type } = require("../models");
+const { Item, Staff } = require("../models");
 const { QueryTypes, NUMBER } = require("sequelize");
 
 const createItem = async (req, res) => {
@@ -297,10 +297,18 @@ const processingItem = async (req, res) => {
   const {id_item} = req.params
   const {quantity} = req.body
   try {
-    const ingredientList = await Item.sequelize.query(
-      "SELECT IG.name as name_ingredient, IG.unit, R.id_ingredient, R.id_item, R.quantity*(:quantity) as totalquantity, IG.quantity FROM recipes as R, ingredients as IG WHERE R.id_item = :id_item AND R.id_ingredient = IG.id_ingredient",
+    const staff = await Item.sequelize.query(
+      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
       {
-        replacements: { id_item: id_item, quantity: quantity },
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const ingredientList = await Item.sequelize.query(
+      "SELECT R.id_item, R.id_ingredient, IG.unit, IG.name as name_ingredient, (R.quantity*(:quantity)) as totalquantity, (SELECT quantity FROM ingredient_stores WHERE id_ingredient = R.id_ingredient AND id_store = :id_store) as quantity FROM recipes as R, ingredients as IG WHERE R.id_item = :id_item AND IG.id_ingredient = R.id_ingredient",
+      {
+        replacements: { id_item: id_item, quantity: quantity, id_store: staff[0].id_store },
         type: QueryTypes.SELECT,
         raw: true,
       }
@@ -310,6 +318,7 @@ const processingItem = async (req, res) => {
     while(ingredientList[i]){
       if(ingredientList[i].totalquantity >= ingredientList[i].quantity){
         isEnough = 0;
+        break;
       }
       else {
         i++;
@@ -319,9 +328,9 @@ const processingItem = async (req, res) => {
       let j = 0;
       while(ingredientList[j]){
         await Item.sequelize.query(
-          "UPDATE ingredients SET quantity = quantity - (:quantity) WHERE id_ingredient = :id_ingredient",
+          "UPDATE ingredient_stores SET quantity = quantity - (:quantity) WHERE id_ingredient = :id_ingredient AND id_store = :id_store",
           {
-            replacements: { id_ingredient: ingredientList[j].id_ingredient, quantity: ingredientList[j].totalquantity },
+            replacements: { id_ingredient: ingredientList[j].id_ingredient, quantity: ingredientList[j].totalquantity, id_store: staff[0].id_store },
             type: QueryTypes.UPDATE,
             raw: true,
           }
@@ -329,9 +338,9 @@ const processingItem = async (req, res) => {
         j++;
       }
       await Item.sequelize.query(
-        "UPDATE items SET quantity = quantity + (:quantity) WHERE id_item = :id_item",
+        "UPDATE item_stores SET quantity = quantity + (:quantity) WHERE id_item = :id_item AND id_store = :id_store",
         {
-          replacements: { quantity: quantity, id_item, id_item },
+          replacements: { quantity: quantity, id_item, id_item, id_store: staff[0].id_store },
           type: QueryTypes.UPDATE,
           raw: true,
         }

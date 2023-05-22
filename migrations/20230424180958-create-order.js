@@ -39,7 +39,10 @@ module.exports = {
       time_confirm: {
         type: Sequelize.DATE
       },
-      time_expected: {
+      time_shipper_receive: {
+        type: Sequelize.DATE
+      },
+      time_shipper_delivered: {
         type: Sequelize.DATE
       },
       delivery_fee: {

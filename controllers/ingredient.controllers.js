@@ -1,4 +1,4 @@
-const { Ingredient } = require("../models");
+const { Ingredient, Staff } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const createIngredient = async (req, res) => {
@@ -46,10 +46,18 @@ const processingIngredient = async (req, res) => {
   const {id_ingredient} = req.params
   const {quantity} = req.body
   try {
-    const ingredientList = await Ingredient.sequelize.query(
-      "SELECT UI.name as name_u_ingredient, UI.unit, RI.id_u_ingredient, RI.id_ingredient, RI.quantity*(:quantity) as totalquantity, UI.quantity FROM recipe_ingredients as RI, unprocessed_ingredients as UI WHERE RI.id_ingredient = :id_ingredient AND RI.id_u_ingredient = UI.id_u_ingredient",
+    const staff = await Ingredient.sequelize.query(
+      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
       {
-        replacements: { id_ingredient: id_ingredient, quantity: quantity },
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const ingredientList = await Ingredient.sequelize.query(
+      "SELECT R.id_u_ingredient, R.id_ingredient, IG.unit, IG.name as name_ingredient, (R.quantity*(:quantity)) as totalquantity, (SELECT quantity FROM unprocessed_ingredient_stores WHERE id_u_ingredient = R.id_u_ingredient AND id_store = :id_store) as quantity FROM recipe_ingredients as R, unprocessed_ingredients as IG WHERE R.id_ingredient = :id_ingredient AND IG.id_u_ingredient = R.id_u_ingredient",
+      {
+        replacements: { id_ingredient: id_ingredient, quantity: quantity, id_store: staff[0].id_store },
         type: QueryTypes.SELECT,
         raw: true,
       }
@@ -69,9 +77,9 @@ const processingIngredient = async (req, res) => {
       let j = 0;
       while(ingredientList[j]){
         await Ingredient.sequelize.query(
-          "UPDATE unprocessed_ingredients SET quantity = quantity - (:quantity) WHERE id_u_ingredient = :id_u_ingredient",
+          "UPDATE unprocessed_ingredient_stores SET quantity = quantity - (:quantity) WHERE id_u_ingredient = :id_u_ingredient AND id_store = :id_store",
           {
-            replacements: { id_u_ingredient: ingredientList[j].id_u_ingredient, quantity: ingredientList[j].totalquantity },
+            replacements: { id_u_ingredient: ingredientList[j].id_u_ingredient, quantity: ingredientList[j].totalquantity, id_store: staff[0].id_store },
             type: QueryTypes.UPDATE,
             raw: true,
           }
@@ -79,9 +87,9 @@ const processingIngredient = async (req, res) => {
         j++;
       }
       await Ingredient.sequelize.query(
-        "UPDATE ingredients SET quantity = quantity + (:quantity) WHERE id_ingredient = :id_ingredient ",
+        "UPDATE ingredient_stores SET quantity = quantity + (:quantity) WHERE id_ingredient = :id_ingredient AND id_store = :id_store",
         {
-          replacements: { quantity: quantity, id_ingredient: id_ingredient },
+          replacements: { quantity: quantity, id_ingredient: id_ingredient, id_store: staff[0].id_store },
           type: QueryTypes.UPDATE,
           raw: true,
         }

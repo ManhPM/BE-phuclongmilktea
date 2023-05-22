@@ -28,22 +28,6 @@ const updateType = async (req, res) => {
   }
 }
 
-const deleteType = async (req, res) => {
-  const { id_type } = req.params
-  try {
-      const typeUpdate = await Type.findOne({
-        where: {
-          id_type
-        }
-      })
-      typeUpdate.status = 0;
-      await typeUpdate.save();
-      res.status(201).json({message: "Xoá thành công!"})
-  } catch (error) {
-      res.status(500).json({message: "Đã có lỗi xảy ra. Xoá thất bại!"})
-  }
-}
-
 const getAllType = async (req, res) => {
   try {
     const typeList = await Type.sequelize.query(
@@ -64,5 +48,4 @@ module.exports = {
     getAllType,
     createType,
     updateType,
-    deleteType,
 };
