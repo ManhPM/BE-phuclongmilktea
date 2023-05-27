@@ -49,6 +49,9 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
+      discount_fee: {
+        type: Sequelize.INTEGER,
+      },
       item_fee: {
         type: Sequelize.INTEGER,
         allowNull: false

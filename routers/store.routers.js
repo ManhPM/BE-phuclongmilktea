@@ -6,7 +6,8 @@ const {authorize} = require("../middlewares/auth/authorize.js");
 const { checkCreateStore } = require("../middlewares/validates/checkCreate");
 const storeRouter = express.Router();
 
-storeRouter.get("/", getAllStoreForUser);
+storeRouter.get("/user", getAllStoreForUser);
+storeRouter.get("/admin", authenticate, authorize(["Admin"]), getAllStore);
 storeRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateStore(Store), createStore);
 storeRouter.put("/update/:id_store", authenticate, authorize(["Admin"]), updateStore);
 storeRouter.put("/updateposition", authenticate, authorize(["Quản lý"]), updatePositionOfStore);

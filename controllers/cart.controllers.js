@@ -5,9 +5,10 @@ const {
   Order,
   Order_detail,
   Store,
-  Item_store,
+  Discount,
 } = require("../models");
 const { QueryTypes } = require("sequelize");
+const { sequelize } = require("../models");
 
 const getAllItemInCart = async (req, res) => {
   try {
@@ -192,7 +193,7 @@ const deleteOneItemInCart = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const { id_payment, description, id_shipping_partner, userLat, userLng, id_store } = req.body;
+  const { id_payment, description, id_shipping_partner, userLat, userLng, id_store, code } = req.body;
   try {
     const info = await Cart.sequelize.query(
       "SELECT C.*, CU.phone FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
@@ -202,7 +203,6 @@ const checkout = async (req, res) => {
         raw: true,
       }
     );
-    if(info[0].phone){
       const itemInCartList = await Cart_detail.findAll({
         where: {
           id_cart: info[0].id_cart,
@@ -244,41 +244,90 @@ const checkout = async (req, res) => {
             raw: true,
           }
         );
-        const newOrder = await Order.create({
-          description,
-          id_payment,
-          delivery_fee: random,
-          item_fee: Number(total[0].item_fee),
-          total: Number(total[0].item_fee) + random,
-          time_order: date,
-          id_customer: info[0].id_customer,
-          id_shipping_partner,
-          status: 0,
-          id_store,
-        });
-        let i = 0;
-        while (itemInCartList[i]) {
-          await Order_detail.create({
-            id_order: newOrder.id_order,
-            id_item: itemInCartList[i].id_item,
-            quantity: itemInCartList[i].quantity,
-          });
-          await Cart_detail.destroy({
+        if(code){
+          const discount = await Discount.findOne({
             where: {
-              id_item: itemInCartList[i].id_item,
-              id_cart: itemInCartList[i].id_cart,
-            },
-          });
-          i++;
+              code
+            }
+          })
+          const cart = await Cart.sequelize.query(
+            "SELECT SUM(quantity) as totalQuantity FROM cart_details WHERE id_cart = :id_cart",
+            {
+              replacements: { id_cart: info[0].id_cart },
+              type: QueryTypes.SELECT,
+              raw: true,
+            }
+          );
+          if(cart[0].totalQuantity >= discount.min_quantity){
+            discount.quantity = discount.quantity - 1
+            await discount.save();
+            const newOrder = await Order.create({
+              description,
+              id_payment,
+              delivery_fee: random,
+              item_fee: Number(total[0].item_fee),
+              total: Number(total[0].item_fee) + random - ((Number(total[0].item_fee) + random)*discount.discount_percent)/100,
+              discount_fee: ((Number(total[0].item_fee) + random)*discount.discount_percent)/100,
+              time_order: date,
+              id_customer: info[0].id_customer,
+              id_shipping_partner,
+              status: 0,
+              id_store,
+            });
+            let i = 0;
+            while (itemInCartList[i]) {
+              await Order_detail.create({
+                id_order: newOrder.id_order,
+                id_item: itemInCartList[i].id_item,
+                quantity: itemInCartList[i].quantity,
+              });
+              await Cart_detail.destroy({
+                where: {
+                  id_item: itemInCartList[i].id_item,
+                  id_cart: itemInCartList[i].id_cart,
+                },
+              });
+              i++;
+            }
+            res.status(201).json({ message: "Đặt hàng thành công!" });
+          }
+          else {
+            res.status(400).json({ message: "Số lượng sản phẩm chưa đạt yêu cầu của mã giảm giá!" });
+          }
         }
-        res.status(201).json({ message: "Đặt hàng thành công!" });
+        else {
+          const newOrder = await Order.create({
+            description,
+            id_payment,
+            delivery_fee: random,
+            item_fee: Number(total[0].item_fee),
+            total: Number(total[0].item_fee) + random,
+            time_order: date,
+            id_customer: info[0].id_customer,
+            id_shipping_partner,
+            status: 0,
+            id_store,
+          });
+          let i = 0;
+          while (itemInCartList[i]) {
+            await Order_detail.create({
+              id_order: newOrder.id_order,
+              id_item: itemInCartList[i].id_item,
+              quantity: itemInCartList[i].quantity,
+            });
+            await Cart_detail.destroy({
+              where: {
+                id_item: itemInCartList[i].id_item,
+                id_cart: itemInCartList[i].id_cart,
+              },
+            });
+            i++;
+          }
+          res.status(201).json({ message: "Đặt hàng thành công!" });
+        }
       } else {
         res.status(400).json({ message: "Giỏ hàng của bạn đang trống!" });
       }
-    }
-    else {
-      res.status(400).json({ message: "Vui lòng cập nhật thêm số điện thoại trước khi đặt hàng!" });
-    }
   } catch (error) {
     res.status(500).json({ message: "Đặt hàng thất bại!" });
   }

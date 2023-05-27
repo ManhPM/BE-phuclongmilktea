@@ -2,7 +2,9 @@ const {
   Shipper,
   Customer,
   Staff,
+  Discount
 } = require("../../models");
+const { QueryTypes } = require("sequelize");
 
 const checkCreateAccount = (Model) => {
   return async (req, res, next) => {
@@ -194,6 +196,58 @@ const checkCreateEmail = async (req, res, next) => {
   }
 }
 
+const checkPhoneCheckout = async (req, res, next) => {
+  try {
+    const info = await Customer.sequelize.query(
+      "SELECT C.*, CU.phone FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    if(info[0].phone){
+      next();
+    }
+    else {
+      res.status(400).json({ message: "Vui lòng cập nhật số điện thoại trước khi đặt hàng!" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+}
+
+const checkDiscountCode = async (req, res, next) => {
+  const {code} = req.body
+  try {
+    if(code){
+      const discount = await Discount.findOne({
+        where: {
+          code,
+        },
+      });
+      if(discount.quantity > 0){
+        const date = new Date();
+        date.setHours(date.getHours() + 7);
+        if(discount.end_date >= date){
+          next();
+        }
+        else {
+          res.status(400).json({ message: "Mã xác nhận đã hết hạn sử dụng!" });
+        }
+      }
+      else {
+        res.status(400).json({ message: "Mã xác nhận đã hết lượt sử dụng!"});
+      }
+    }
+    else {
+      next();
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy raa!" });
+  }
+}
+
 module.exports = {
   checkCreateAccount,
   checkCreateItem,
@@ -205,5 +259,7 @@ module.exports = {
   checkCreatePayment,
   checkCreateUnprocessedIngredient,
   checkCreateIngredient,
-  checkCreateEmail
+  checkCreateEmail,
+  checkPhoneCheckout,
+  checkDiscountCode
 };

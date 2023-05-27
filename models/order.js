@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     time_shipper_delivered: DataTypes.DATE,
     delivery_fee: DataTypes.INTEGER,
     item_fee: DataTypes.INTEGER,
+    discount_fee: DataTypes.INTEGER,
     total: DataTypes.INTEGER,
     status: DataTypes.INTEGER,
     description: DataTypes.STRING
