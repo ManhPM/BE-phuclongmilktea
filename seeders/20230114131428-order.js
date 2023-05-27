@@ -21,7 +21,7 @@ module.exports = {
         delivery_fee: 25000,
         item_fee: 125000,
         total: 150000,
-        status: 0
+        status: 1
       },
       {
         id_customer: 1,
@@ -43,7 +43,7 @@ module.exports = {
         delivery_fee: 25000,
         item_fee: 110000,
         total: 135000,
-        status: 2
+        status: 4
       },
       {
         id_customer: 1,
@@ -54,7 +54,7 @@ module.exports = {
         delivery_fee: 0,
         item_fee: 0,
         total: 0,
-        status: 1
+        status: 4
       },
       {
         id_customer: 1,
@@ -65,7 +65,7 @@ module.exports = {
         delivery_fee: 0,
         item_fee: 0,
         total: 0,
-        status: 1
+        status: 4
       },
       {
         id_customer: 1,
@@ -76,7 +76,7 @@ module.exports = {
         delivery_fee: 0,
         item_fee: 0,
         total: 0,
-        status: 1
+        status: 4
       },
       {
         id_customer: 1,
@@ -87,7 +87,7 @@ module.exports = {
         delivery_fee: 0,
         item_fee: 0,
         total: 0,
-        status: 1
+        status: 4
       },
     ]);
   },

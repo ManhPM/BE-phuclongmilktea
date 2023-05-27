@@ -24,6 +24,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      unit_price: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      image: {
+        type: Sequelize.STRING
+      },
       storeLat: {
         type: Sequelize.STRING
       },

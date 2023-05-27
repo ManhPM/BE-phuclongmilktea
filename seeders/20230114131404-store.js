@@ -9,7 +9,9 @@ module.exports = {
         name: "Cửa Hàng 1",
         address: "1012 Kha Vạn Cân, Phường Linh Chiểu, TP. Thủ Đức",
         phone: "028 3811 5555",
-        email: "phuclongmilktea1@gmail.com"
+        email: "phuclongmilktea1@gmail.com",
+        image: "https://phuclong.com.vn/uploads/gallery/8815e03a817310-37812889_1785422298194068_1073543890432163840_o.jpg",
+        unit_price: 3000,
       },
       {
         storeLat: "10.65025804481258",
@@ -17,7 +19,9 @@ module.exports = {
         name: "Cửa Hàng 2",
         address: "Khu Công nghệ cao TP.HCM (SHTP), Xa lộ Hà Nội, Phường Hiệp Phú, TP. Thủ Đức",
         phone: "028 3811 5555",
-        email: "phuclongmilktea2@gmail.com"
+        email: "phuclongmilktea2@gmail.com",
+        image: "https://phuclong.com.vn/uploads/store/51f7cbf1d9d10e-lotteq11.jpg",
+        unit_price: 3300,
       },
     ]);
   },

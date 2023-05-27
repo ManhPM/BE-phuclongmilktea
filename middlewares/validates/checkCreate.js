@@ -1,3 +1,9 @@
+const {
+  Shipper,
+  Customer,
+  Staff,
+} = require("../../models");
+
 const checkCreateAccount = (Model) => {
   return async (req, res, next) => {
     const { username } = req.body;
@@ -87,13 +93,12 @@ const checkCreateProvider = (Model) => {
 };
 const checkCreateStore = (Model) => {
   return async (req, res, next) => {
-    const { name, phone, address, email } = req.body;
+    const { name, phone, address } = req.body;
     const item = await Model.findOne({
       where: {
         name,
         address,
         phone,
-        email
       },
     });
     if (!item) {
@@ -160,6 +165,35 @@ const checkItemValue = (Model) => {
   };
 };
 
+const checkCreateEmail = async (req, res, next) => {
+  const { email } = req.body
+  try {
+    const customer = await Customer.findOne({
+      where: {
+        email,
+      },
+    });
+    const shipper = await Shipper.findOne({
+      where: {
+        email,
+      },
+    });
+    const staff = await Staff.findOne({
+      where: {
+        email,
+      },
+    });
+    if(customer || shipper || staff){
+      res.status(400).json({ message: "Địa chỉ email đã tồn tại!" });
+    }
+    else {
+      next();
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+}
+
 module.exports = {
   checkCreateAccount,
   checkCreateItem,
@@ -171,4 +205,5 @@ module.exports = {
   checkCreatePayment,
   checkCreateUnprocessedIngredient,
   checkCreateIngredient,
+  checkCreateEmail
 };

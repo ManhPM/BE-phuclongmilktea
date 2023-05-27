@@ -2,9 +2,9 @@ const {
   Account,
   Shipper,
   Customer,
-  Role,
   Wishlist,
   Cart,
+  Staff
 } = require("../models");
 const { QueryTypes } = require("sequelize");
 const jwt = require("jsonwebtoken");
@@ -104,6 +104,50 @@ const createAccountForShipper = async (req, res) => {
   }
 };
 
+const createAccountForStaff = async (req, res) => {
+  const {
+    username,
+    password,
+    name,
+    gender,
+    email,
+    phone,
+    address,
+    birthday,
+    description,
+    id_store,
+  } = req.body;
+  try {
+    //tạo ra một chuỗi ngẫu nhiên
+    const salt = bcrypt.genSaltSync(10);
+    //mã hoá salt + password
+    const hashPassword = bcrypt.hashSync(password, salt);
+    const newAccount = await Account.create({
+      username,
+      id_role: 3,
+      password: hashPassword,
+    });
+    await Staff.create({
+      id_account: newAccount.id_account,
+      id_store,  
+      name,
+      gender,
+      email,
+      phone,
+      address,
+      birthday,
+      description,
+    });
+    res.status(200).json({
+      message: "Đăng ký thành công!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Đăng ký thất bại!",
+    });
+  }
+};
+
 const loginStaff = async (req, res) => {
   const { username, password } = req.body;
   const account = await Account.findOne({
@@ -117,12 +161,21 @@ const loginStaff = async (req, res) => {
     const isAuth = bcrypt.compareSync(password, account.password);
     if (isAuth) {
       const token = jwt.sign({ username: account.username }, "manhpham2k1", {
-        expiresIn: 30 * 24 * 60 * 60,
+        expiresIn: 15 * 24 * 60 * 60,
       });
+      const refreshToken = jwt.sign(
+        { username: account.username },
+        "manhpham2k1",
+        {
+          expiresIn: 30 * 24 * 60 * 60,
+        }
+      );
       res.status(200).json({
         message: "Đăng nhập thành công!",
         token,
-        expireTime: 30 * 24 * 60 * 60,
+        refreshToken,
+        expireTimeToken: 15 * 24 * 60 * 60,
+        expireTimeRefreshToken: 30 * 24 * 60 * 30,
       });
     } else {
       res.status(400).json({ message: "Sai thông tin đăng nhập!" });
@@ -141,12 +194,21 @@ const loginAdmin = async (req, res) => {
     const isAuth = bcrypt.compareSync(password, account.password);
     if (isAuth) {
       const token = jwt.sign({ username: account.username }, "manhpham2k1", {
-        expiresIn: 30 * 24 * 60 * 60,
+        expiresIn: 15 * 24 * 60 * 60,
       });
+      const refreshToken = jwt.sign(
+        { username: account.username },
+        "manhpham2k1",
+        {
+          expiresIn: 30 * 24 * 60 * 60,
+        }
+      );
       res.status(200).json({
         message: "Đăng nhập thành công!",
         token,
-        expireTime: 30 * 24 * 60 * 60,
+        refreshToken,
+        expireTimeToken: 15 * 24 * 60 * 60,
+        expireTimeRefreshToken: 30 * 24 * 60 * 60,
       });
     } else {
       res.status(400).json({ message: "Sai thông tin đăng nhập!" });
@@ -174,12 +236,21 @@ const loginShipper = async (req, res) => {
     const isAuth = bcrypt.compareSync(password, account.password);
     if (isAuth) {
       const token = jwt.sign({ username: account.username }, "manhpham2k1", {
-        expiresIn: 30 * 24 * 60 * 60,
+        expiresIn: 15 * 24 * 60 * 60,
       });
+      const refreshToken = jwt.sign(
+        { username: account.username },
+        "manhpham2k1",
+        {
+          expiresIn: 30 * 24 * 60 * 60,
+        }
+      );
       res.status(200).json({
         message: "Đăng nhập thành công!",
         token,
-        expireTime: 30 * 24 * 60 * 60,
+        refreshToken,
+        expireTimeToken: 15 * 24 * 60 * 60,
+        expireTimeRefreshToken: 30 * 24 * 60 * 60,
         shipperInfo: shipper,
       });
     } else {
@@ -203,16 +274,77 @@ const login = async (req, res) => {
       },
     });
     const token = jwt.sign({ username: account.username }, "manhpham2k1", {
-      expiresIn: 30 * 60 * 60 * 24,
+      expiresIn: 15 * 24 * 60 * 60,
     });
+    const refreshToken = jwt.sign(
+      { username: account.username },
+      "manhpham2k1",
+      {
+        expiresIn: 30 * 24 * 60 * 60,
+      }
+    );
     res.status(200).json({
       message: "Đăng nhập thành công!",
       token,
+      refreshToken,
       userInfo: customer,
-      expireTime: 30 * 60 * 60 * 24,
+      expireTimeToken: 15 * 60 * 60 * 24,
+      expireTimeRefreshToken: 30 * 60 * 60 * 24,
     });
   } else {
     res.status(400).json({ message: "Sai thông tin đăng nhập!" });
+  }
+};
+
+const refreshToken = async (req, res) => {
+  try {
+    const account = await Account.findOne({
+      where: {
+        username: req.username,
+      },
+    });
+    const token = jwt.sign({ username: account.username }, "manhpham2k1", {
+      expiresIn: 15 * 24 * 60 * 60,
+    });
+    const refreshToken = jwt.sign(
+      { username: account.username },
+      "manhpham2k1",
+      {
+        expiresIn: 30 * 24 * 60 * 60,
+      }
+    );
+    res.status(200).json({
+      message: "Refresh token thành công!",
+      token,
+      refreshToken,
+      expireTimeToken: 15 * 60 * 60 * 24,
+      expireTimeRefreshToken: 30 * 60 * 60 * 24,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Refresh token thất bại!",
+    });
+  }
+};
+
+const uploadAvatar = async (req, res) => {
+  const {image} = req.body
+  try {
+    const account = await Account.findOne({
+      where: {
+        username: req.username
+      }
+    })
+    const update = await Customer.findOne({
+      where: {
+        id_account: account.id_account
+      }
+    })
+    update.image = image
+    await update.save();
+    res.status(200).json({message: "Cập nhật ảnh đại diện thành công!"})
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"})
   }
 };
 
@@ -236,9 +368,6 @@ const changePassword = async (req, res) => {
           const salt = bcrypt.genSaltSync(10);
           //mã hoá salt + password
           const hashPassword = bcrypt.hashSync(newPassword, salt);
-          if (accountUpdate.active == 0) {
-            accountUpdate.active = 1;
-          }
           accountUpdate.password = hashPassword;
           await accountUpdate.save();
           res.status(200).json({
@@ -282,7 +411,7 @@ const forgotPassword = async (req, res) => {
       });
     } else {
       const account = await Account.sequelize.query(
-        "SELECT CU.email FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username",
+        "SELECT CU.email, A.* FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username AND A.",
         {
           type: QueryTypes.SELECT,
           replacements: {
@@ -290,40 +419,47 @@ const forgotPassword = async (req, res) => {
           },
         }
       );
-      await Account.sequelize.query(
-        "UPDATE accounts SET forgot = :randomID WHERE username = :username",
-        {
-          type: QueryTypes.UPDATE,
-          replacements: {
-            randomID: randomID,
-            username: username,
+      if(account[0].isActive == 0){
+        res.status(400).json({
+          message: `Địa chỉ email chưa được xác minh!`,
+        });
+      }
+      else {
+        await Account.sequelize.query(
+          "UPDATE accounts SET forgot = :randomID WHERE username = :username",
+          {
+            type: QueryTypes.UPDATE,
+            replacements: {
+              randomID: randomID,
+              username: username,
+            },
+          }
+        );
+        let transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: "n19dccn107@student.ptithcm.edu.vn", // generated ethereal user
+            pass: "bqztpfkmmbpzmdxl", // generated ethereal password
           },
-        }
-      );
-      let transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: "n19dccn107@student.ptithcm.edu.vn", // generated ethereal user
-          pass: "bqztpfkmmbpzmdxl", // generated ethereal password
-        },
-      });
-      // send mail with defined transport object
-      await transporter.sendMail({
-        from: "n19dccn107@student.ptithcm.edu.vn", // sender address
-        to: `${account[0].email}`, // list of receivers
-        subject: "FORGOT PASSWORD", // Subject line
-        text: "FORGOT PASSWORD", // plain text body
-        html: `Mã xác nhận của bạn là: ${randomID}`, // html body
-      });
-      var s2 = account[0].email;
-      var s1 = s2.substring(0, s2.length - 15);
-      var s3 = s2.substring(s2.length - 15, s2.length);
-      var email = s1 + s3.replace(/\S/gi, "*");
-      res.status(200).json({
-        message: `Mã xác minh đã được gửi về email: ${email} vui lòng kiểm tra hòm thư!`,
-      });
+        });
+        // send mail with defined transport object
+        await transporter.sendMail({
+          from: "n19dccn107@student.ptithcm.edu.vn", // sender address
+          to: `${account[0].email}`, // list of receivers
+          subject: "FORGOT PASSWORD", // Subject line
+          text: "FORGOT PASSWORD", // plain text body
+          html: `Mã xác nhận của bạn là: ${randomID}`, // html body
+        });
+        var s2 = account[0].email;
+        var s1 = s2.substring(0, s2.length - 15);
+        var s3 = s2.substring(s2.length - 15, s2.length);
+        var email = s1 + s3.replace(/\S/gi, "*");
+        res.status(200).json({
+          message: `Mã xác minh đã được gửi về email: ${email} vui lòng kiểm tra hòm thư!`,
+        });
+      }
     }
   } catch (error) {
     console.log(error);
@@ -385,16 +521,20 @@ const accessForgotPassword = async (req, res, next) => {
   }
 };
 
+
 module.exports = {
   login,
   loginStaff,
   loginShipper,
   loginAdmin,
   logout,
-  createAccountForCustomer,
   changePassword,
   forgotPassword,
   verify,
   accessForgotPassword,
   createAccountForShipper,
+  createAccountForCustomer,
+  createAccountForStaff,
+  refreshToken,
+  uploadAvatar,
 };

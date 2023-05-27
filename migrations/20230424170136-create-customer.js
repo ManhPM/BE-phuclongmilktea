@@ -19,15 +19,15 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: false
+      },
+      image: {
+        type: Sequelize.STRING,
       },
       phone: {
         type: Sequelize.STRING,
-        allowNull: false
       },
       address: {
         type: Sequelize.STRING,
-        allowNull: false
       },
  
     });

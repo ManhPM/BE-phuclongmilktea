@@ -1,5 +1,5 @@
 const { Order, Order_detail, Item_store } = require("../models");
-const { QueryTypes, or } = require("sequelize");
+const { QueryTypes } = require("sequelize");
 
 const getAllOrder = async (req, res) => {
   try {

@@ -195,69 +195,89 @@ const checkout = async (req, res) => {
   const { id_payment, description, id_shipping_partner, userLat, userLng, id_store } = req.body;
   try {
     const info = await Cart.sequelize.query(
-      "SELECT C.* FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
+      "SELECT C.*, CU.phone FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
       {
         replacements: { username: `${req.username}` },
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
-    const itemInCartList = await Cart_detail.findAll({
-      where: {
-        id_cart: info[0].id_cart,
-      },
-    });
-    if (itemInCartList.length) {
-      const store = await Store.findOne();
-      const date = new Date();
-      date.setHours(date.getHours() + 7);
-      const storeLat = store.storeLat;
-      const storeLng = store.storeLng;
-      let random = getDistanceFromLatLonInKm(
-        userLat,
-        userLng,
-        storeLat,
-        storeLng
-      )*3000;
-      random = Math.ceil(random/1000) * 1000;
-      const total = await Cart.sequelize.query(
-        "SELECT SUM(CD.quantity*I.price) as item_fee FROM cart_details as CD, items as I WHERE I.id_item = CD.id_item AND CD.id_cart = :id_cart",
-        {
-          replacements: { id_cart: info[0].id_cart },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      const newOrder = await Order.create({
-        description,
-        id_payment,
-        delivery_fee: random,
-        item_fee: Number(total[0].item_fee),
-        total: Number(total[0].item_fee) + random,
-        time_order: date,
-        id_customer: info[0].id_customer,
-        id_shipping_partner,
-        status: 0,
-        id_store,
+    if(info[0].phone){
+      const itemInCartList = await Cart_detail.findAll({
+        where: {
+          id_cart: info[0].id_cart,
+        },
       });
-      let i = 0;
-      while (itemInCartList[i]) {
-        await Order_detail.create({
-          id_order: newOrder.id_order,
-          id_item: itemInCartList[i].id_item,
-          quantity: itemInCartList[i].quantity,
+      if (itemInCartList.length) {
+        const store = await Store.findOne();
+        const date = new Date();
+        date.setHours(date.getHours() + 7);
+        const storeLat = store.storeLat;
+        const storeLng = store.storeLng;
+        let random = getDistanceFromLatLonInKm(
+          userLat,
+          userLng,
+          storeLat,
+          storeLng
+        );
+        if(random < 2){
+          random = store.unit_price*5
+          random = Math.ceil(random/1000) * 1000;
+        }
+        else if(random >= 2 && random < 5){
+          random = store.unit_price*5 + 5000
+          random = Math.ceil(random/1000) * 1000;
+        }
+        else if(random >= 5 && random < 10){
+          random = store.unit_price*5 + 10000
+          random = Math.ceil(random/1000) * 1000;
+        }
+        else {
+          random = random*store.unit_price
+          random = Math.ceil(random/1000) * 1000;
+        }
+        const total = await Cart.sequelize.query(
+          "SELECT SUM(CD.quantity*I.price) as item_fee FROM cart_details as CD, items as I WHERE I.id_item = CD.id_item AND CD.id_cart = :id_cart",
+          {
+            replacements: { id_cart: info[0].id_cart },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        const newOrder = await Order.create({
+          description,
+          id_payment,
+          delivery_fee: random,
+          item_fee: Number(total[0].item_fee),
+          total: Number(total[0].item_fee) + random,
+          time_order: date,
+          id_customer: info[0].id_customer,
+          id_shipping_partner,
+          status: 0,
+          id_store,
         });
-        await Cart_detail.destroy({
-          where: {
+        let i = 0;
+        while (itemInCartList[i]) {
+          await Order_detail.create({
+            id_order: newOrder.id_order,
             id_item: itemInCartList[i].id_item,
-            id_cart: itemInCartList[i].id_cart,
-          },
-        });
-        i++;
+            quantity: itemInCartList[i].quantity,
+          });
+          await Cart_detail.destroy({
+            where: {
+              id_item: itemInCartList[i].id_item,
+              id_cart: itemInCartList[i].id_cart,
+            },
+          });
+          i++;
+        }
+        res.status(201).json({ message: "Đặt hàng thành công!" });
+      } else {
+        res.status(400).json({ message: "Giỏ hàng của bạn đang trống!" });
       }
-      res.status(201).json({ message: "Đặt hàng thành công!" });
-    } else {
-      res.status(400).json({ message: "Giỏ hàng của bạn đang trống!" });
+    }
+    else {
+      res.status(400).json({ message: "Vui lòng cập nhật thêm số điện thoại trước khi đặt hàng!" });
     }
   } catch (error) {
     res.status(500).json({ message: "Đặt hàng thất bại!" });

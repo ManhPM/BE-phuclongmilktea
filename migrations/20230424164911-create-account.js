@@ -19,7 +19,6 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
-        allowNull: false
       },
       isActive: {
         type: Sequelize.INTEGER,
