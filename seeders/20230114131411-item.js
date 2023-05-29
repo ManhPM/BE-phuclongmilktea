@@ -410,6 +410,69 @@ module.exports = {
         name: 'Pure Butter Croissant 30g',
         price: 20000,
       },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/10-1.png",
+        name: "Bánh Chocolate",
+        price: 20000,
+      },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/41-1.png",
+        name: "Bánh nướng xốp chocolate",
+        price: 20000,
+      },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/11-1.png",
+        name: "Bánh Muffin chocolate",
+        price: 15000,
+      },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/31-1.png",
+        name: "Cupcake chocolate",
+        price: 15000,
+      },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/11-1.png",
+        name: "Cupcake chocolate mâm xôi",
+        price: 15000,
+      },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/11-1.png",
+        name: "Kem ốc quế",
+        price: 15000,
+      },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/42-1.png",
+        name: "Bánh Red Velvet",
+        price: 15000,
+      },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/44-1.png",
+        name: "Kem dâu tươi",
+        price: 15000,
+      },
+      {
+        id_type: 3,
+        image:
+          "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/30-1.png",
+        name: "Kem tô",
+        price: 15000,
+      },
     ]);
   },
 

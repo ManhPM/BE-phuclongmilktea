@@ -1,6 +1,6 @@
 const express = require("express");
 const {Cart} = require("../models")
-const {getAllItemInCart, createItemInCart, checkout, deleteOneItemInCart, increaseNumItemInCart, decreaseNumItemInCart, updateItemInCart } = require("../controllers/cart.controllers");
+const {getAllItemInCart, createItemInCart, checkout, deleteOneItemInCart, increaseNumItemInCart, decreaseNumItemInCart, updateItemInCart, checkoutPayment, checkoutPayment2 } = require("../controllers/cart.controllers");
 const {authenticate} = require("../middlewares/auth/authenticate.js")
 const {authorize} = require("../middlewares/auth/authorize.js");
 const { checkPhoneCheckout, checkDiscountCode } = require("../middlewares/validates/checkCreate");

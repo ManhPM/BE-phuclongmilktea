@@ -1,0 +1,18 @@
+<html>
+  <title>Stripe Payment Demo</title>
+  <body>
+    <h3>Welcome to Payment Gateway</h3>
+    <form action="payment" method="POST">
+      <script
+        src="//checkout.stripe.com/v2/checkout.js"
+        class="stripe-button"
+        data-key="<%=key%>"
+        data-amount="<%=amount%>"
+        data-currency="vnd"
+        data-name="<%=name%>"
+        data-description="Thanh toán hoá đơn đặt hàng"
+        data-locale="auto"
+      ></script>
+    </form>
+  </body>
+</html>

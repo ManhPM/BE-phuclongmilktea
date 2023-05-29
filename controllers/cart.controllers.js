@@ -333,6 +333,44 @@ const checkout = async (req, res) => {
   }
 };
 
+const configPayment = require("../config/configpayment")
+const stripe = require("stripe")(configPayment.SECRET_KEY)
+
+const checkoutPayment = async (req, res) => {
+  res.render('Home',{
+    key:configPayment.PUBLISHABLE_KEY,
+    name: "Phạm Minh Mạnh",
+    amount: "150000"
+  })
+};
+
+const checkoutPayment2 = async (req, res) => {
+  stripe.customers.create({
+    email: req.body.stripeEmail,
+    source: req.body.stripeToken,
+    name: 'Tên khách hàng: Phạm Minh Mạnh',
+    address: {
+      country: "Việt Nam",
+      line1: "D2/084B ấp Nam Sơn xã Quang Trung huyện Thống Nhất tỉnh Đồng Nai"
+    }
+  })
+  .then((customer) => {
+    return stripe.charges.create({
+      amount: 150000,
+      description: "Thanh toán hoá đơn đặt hàng",
+      currency: "VND",
+      customer: customer.id
+    })
+  })
+  .then((charge) => {
+    console.log(charge)
+    res.status(200).json({message: "Success"})
+  })
+  .catch((err) => {
+    res.send(err)
+  })
+};
+
 // Hàm hỗ trợ tính khoảng cách
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   const R = 6371; // Radius of the earth in km
@@ -361,4 +399,6 @@ module.exports = {
   decreaseNumItemInCart,
   deleteOneItemInCart,
   checkout,
+  checkoutPayment,
+  checkoutPayment2
 };

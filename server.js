@@ -4,6 +4,7 @@ const {sequelize} = require("./models");
 const {rootRouter} = require("./routers")
 const { QueryTypes } = require("sequelize");
 const cookieParser = require("cookie-parser");
+const bodyParser =  require("body-parser");
 const session = require('express-session');
 const jwt = require("jsonwebtoken");
 const path = require("path");
@@ -11,6 +12,8 @@ const port = 3005;
 const app = express();
 const cors = require("cors");
 const configfb = require("./config/configfb")
+const configPayment = require("./config/configpayment")
+const stripe = require("stripe")(configPayment.SECRET_KEY)
 const bcrypt = require("bcryptjs");
 const FacebookStrategy  = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -33,6 +36,48 @@ app.use(session({
   saveUninitialized: true,
   secret: 'SECRET' 
 }));
+
+/* SETUP PAYMENT */
+app.set("view engine","ejs")
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  }),
+);
+app.use(bodyParser.json())
+app.get('/', (req,res) => {
+  res.render('Home',{
+    key:configPayment.PUBLISHABLE_KEY,
+    name: "Phạm Minh Mạnh",
+    amount: "150000"
+  })
+})
+app.post('/payment', (req,res) => {
+  stripe.customers.create({
+    email: req.body.stripeEmail,
+    source: req.body.stripeToken,
+    name: 'Tên khách hàng: Phạm Minh Mạnh',
+    address: {
+      country: "Việt Nam",
+      line1: "D2/084B ấp Nam Sơn xã Quang Trung huyện Thống Nhất tỉnh Đồng Nai"
+    }
+  })
+  .then((customer) => {
+    return stripe.charges.create({
+      amount: 150000,
+      description: "Thanh toán hoá đơn đặt hàng",
+      currency: "VND",
+      customer: customer.id
+    })
+  })
+  .then((charge) => {
+    console.log(charge)
+    res.status(200).json({message: "Thanh toán thành công!"})
+  })
+  .catch((err) => {
+    res.send(err)
+  })
+})
 
 /*  PASSPORT SETUP  */
 
