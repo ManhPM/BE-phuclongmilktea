@@ -13,7 +13,7 @@ const getAllStore = async (req, res) => {
 const getAllStoreForUser = async (req, res) => {
   try {
     const storeList = await Store.sequelize.query(
-      "SELECT name, address, phone, email, 6371 * ACOS(COS(RADIANS(10.8477107)) * COS(RADIANS(storeLat)) * COS(RADIANS(storeLng) - RADIANS(106.78567292303907)) + SIN(RADIANS(10.8477107)) * SIN(RADIANS(storeLat))) AS distance FROM stores ORDER BY distance ASC",
+      "SELECT name, address, phone, email, 6371 * ACOS(COS(RADIANS(10.8477107)) * COS(RADIANS(storeLat)) * COS(RADIANS(storeLng) - RADIANS(106.78567292303907)) + SIN(RADIANS(10.8477107)) * SIN(RADIANS(storeLat))) AS distance FROM stores ORDER BY distance ASC LIMIT 0,2",
       {
         type: QueryTypes.SELECT,
         raw: true,

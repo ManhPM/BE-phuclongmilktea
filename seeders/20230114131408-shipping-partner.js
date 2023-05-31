@@ -5,11 +5,13 @@ module.exports = {
     return queryInterface.bulkInsert("Shipping_partners", [
       {
         name: "GrabFood",
-        address: "Hồ Chí Minh"
+        address: "Hồ Chí Minh",
+        unit_price: 3000,
       },
       {
         name: "NowFood",
-        address: "Hồ Chí Minh"
+        address: "Hồ Chí Minh",
+        unit_price: 3500,
       },
     ]);
   },

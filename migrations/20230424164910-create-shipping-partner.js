@@ -16,7 +16,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
- 
+      unit_price: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
     });
   },
   async down(queryInterface, Sequelize) {

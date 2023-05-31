@@ -21,7 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     name: DataTypes.STRING,
-    address: DataTypes.STRING
+    address: DataTypes.STRING,
+    unit_price: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
   }, {
     sequelize,
     modelName: 'Shipping_partner',

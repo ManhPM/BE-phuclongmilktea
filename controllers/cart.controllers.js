@@ -6,6 +6,7 @@ const {
   Order_detail,
   Store,
   Discount,
+  Shipping_partner
 } = require("../models");
 const { QueryTypes } = require("sequelize");
 const { sequelize } = require("../models");
@@ -134,6 +135,43 @@ const increaseNumItemInCart = async (req, res) => {
   }
 };
 
+const getDeliFee = async (req, res) => {
+  const { userLat, userLng, id_shipping_partner, id_store } = req.body;
+  try {
+    const store = await Store.findOne({
+      where: {
+        id_store
+      }
+    });
+    const shipping_partner = await Shipping_partner.findOne({
+      where: {
+        id_shipping_partner
+      }
+    });
+    const storeLat = store.storeLat;
+    const storeLng = store.storeLng;
+    let random = getDistanceFromLatLonInKm(
+      userLat,
+      userLng,
+      storeLat,
+      storeLng
+    );
+    if (random < 2) {
+      random = shipping_partner.unit_price * 5;
+    } else if (random >= 2 && random < 5) {
+      random = shipping_partner.unit_price * 5 + 5000;
+    } else if (random >= 5 && random < 10) {
+      random = shipping_partner.unit_price * 5 + 10000;
+    } else {
+      random = random * shipping_partner.unit_price;
+    }
+    random = Math.ceil(random / 1000) * 1000;
+    res.status(201).json({ delivery_fee: random });
+  } catch (error) {
+    res.status(500).json({ message: "Thao tác thất bại!" });
+  }
+};
+
 const decreaseNumItemInCart = async (req, res) => {
   const { id_item } = req.params;
   try {
@@ -193,7 +231,15 @@ const deleteOneItemInCart = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const { id_payment, description, id_shipping_partner, userLat, userLng, id_store, code } = req.body;
+  const {
+    id_payment,
+    description,
+    id_shipping_partner,
+    userLat,
+    userLng,
+    id_store,
+    code,
+  } = req.body;
   try {
     const info = await Cart.sequelize.query(
       "SELECT C.*, CU.phone FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
@@ -203,105 +249,78 @@ const checkout = async (req, res) => {
         raw: true,
       }
     );
-      const itemInCartList = await Cart_detail.findAll({
+    const itemInCartList = await Cart_detail.findAll({
+      where: {
+        id_cart: info[0].id_cart,
+      },
+    });
+    if (itemInCartList.length) {
+      const store = await Store.findOne({
         where: {
-          id_cart: info[0].id_cart,
-        },
+          id_store
+        }
       });
-      if (itemInCartList.length) {
-        const store = await Store.findOne();
-        const date = new Date();
-        date.setHours(date.getHours() + 7);
-        const storeLat = store.storeLat;
-        const storeLng = store.storeLng;
-        let random = getDistanceFromLatLonInKm(
-          userLat,
-          userLng,
-          storeLat,
-          storeLng
-        );
-        if(random < 2){
-          random = store.unit_price*5
-          random = Math.ceil(random/1000) * 1000;
+      const shipping_partner = await Shipping_partner.findOne({
+        where: {
+          id_shipping_partner
         }
-        else if(random >= 2 && random < 5){
-          random = store.unit_price*5 + 5000
-          random = Math.ceil(random/1000) * 1000;
+      });
+      const date = new Date();
+      date.setHours(date.getHours() + 7);
+      const storeLat = store.storeLat;
+      const storeLng = store.storeLng;
+      let random = getDistanceFromLatLonInKm(
+        userLat,
+        userLng,
+        storeLat,
+        storeLng
+      );
+      if (random < 2) {
+        random = shipping_partner.unit_price * 5;
+      } else if (random >= 2 && random < 5) {
+        random = shipping_partner.unit_price * 5 + 5000;
+      } else if (random >= 5 && random < 10) {
+        random = shipping_partner.unit_price * 5 + 10000;
+      } else {
+        random = random * shipping_partner.unit_price;
+      }
+      random = Math.ceil(random / 1000) * 1000;
+      const total = await Cart.sequelize.query(
+        "SELECT SUM(CD.quantity*I.price) as item_fee FROM cart_details as CD, items as I WHERE I.id_item = CD.id_item AND CD.id_cart = :id_cart",
+        {
+          replacements: { id_cart: info[0].id_cart },
+          type: QueryTypes.SELECT,
+          raw: true,
         }
-        else if(random >= 5 && random < 10){
-          random = store.unit_price*5 + 10000
-          random = Math.ceil(random/1000) * 1000;
-        }
-        else {
-          random = random*store.unit_price
-          random = Math.ceil(random/1000) * 1000;
-        }
-        const total = await Cart.sequelize.query(
-          "SELECT SUM(CD.quantity*I.price) as item_fee FROM cart_details as CD, items as I WHERE I.id_item = CD.id_item AND CD.id_cart = :id_cart",
+      );
+      if (code) {
+        const discount = await Discount.findOne({
+          where: {
+            code,
+          },
+        });
+        const cart = await Cart.sequelize.query(
+          "SELECT SUM(quantity) as totalQuantity FROM cart_details WHERE id_cart = :id_cart",
           {
             replacements: { id_cart: info[0].id_cart },
             type: QueryTypes.SELECT,
             raw: true,
           }
         );
-        if(code){
-          const discount = await Discount.findOne({
-            where: {
-              code
-            }
-          })
-          const cart = await Cart.sequelize.query(
-            "SELECT SUM(quantity) as totalQuantity FROM cart_details WHERE id_cart = :id_cart",
-            {
-              replacements: { id_cart: info[0].id_cart },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          if(cart[0].totalQuantity >= discount.min_quantity){
-            discount.quantity = discount.quantity - 1
-            await discount.save();
-            const newOrder = await Order.create({
-              description,
-              id_payment,
-              delivery_fee: random,
-              item_fee: Number(total[0].item_fee),
-              total: Number(total[0].item_fee) + random - ((Number(total[0].item_fee) + random)*discount.discount_percent)/100,
-              discount_fee: ((Number(total[0].item_fee) + random)*discount.discount_percent)/100,
-              time_order: date,
-              id_customer: info[0].id_customer,
-              id_shipping_partner,
-              status: 0,
-              id_store,
-            });
-            let i = 0;
-            while (itemInCartList[i]) {
-              await Order_detail.create({
-                id_order: newOrder.id_order,
-                id_item: itemInCartList[i].id_item,
-                quantity: itemInCartList[i].quantity,
-              });
-              await Cart_detail.destroy({
-                where: {
-                  id_item: itemInCartList[i].id_item,
-                  id_cart: itemInCartList[i].id_cart,
-                },
-              });
-              i++;
-            }
-            res.status(201).json({ message: "Đặt hàng thành công!" });
-          }
-          else {
-            res.status(400).json({ message: "Số lượng sản phẩm chưa đạt yêu cầu của mã giảm giá!" });
-          }
-        }
-        else {
+        if (cart[0].totalQuantity >= discount.min_quantity) {
+          discount.quantity = discount.quantity - 1;
+          await discount.save();
           const newOrder = await Order.create({
             description,
             id_payment,
             delivery_fee: random,
             item_fee: Number(total[0].item_fee),
-            total: Number(total[0].item_fee) + random,
+            total:
+              Number(total[0].item_fee) -
+              (Number(total[0].item_fee) * discount.discount_percent) / 100 +
+              random,
+            discount_fee:
+              (Number(total[0].item_fee) * discount.discount_percent) / 100,
             time_order: date,
             id_customer: info[0].id_customer,
             id_shipping_partner,
@@ -324,51 +343,89 @@ const checkout = async (req, res) => {
             i++;
           }
           res.status(201).json({ message: "Đặt hàng thành công!" });
+        } else {
+          res
+            .status(400)
+            .json({
+              message: "Số lượng sản phẩm chưa đạt yêu cầu của mã giảm giá!",
+            });
         }
       } else {
-        res.status(400).json({ message: "Giỏ hàng của bạn đang trống!" });
+        const newOrder = await Order.create({
+          description,
+          id_payment,
+          delivery_fee: random,
+          item_fee: Number(total[0].item_fee),
+          total: Number(total[0].item_fee) + random,
+          time_order: date,
+          id_customer: info[0].id_customer,
+          id_shipping_partner,
+          status: 0,
+          id_store,
+        });
+        let i = 0;
+        while (itemInCartList[i]) {
+          await Order_detail.create({
+            id_order: newOrder.id_order,
+            id_item: itemInCartList[i].id_item,
+            quantity: itemInCartList[i].quantity,
+          });
+          await Cart_detail.destroy({
+            where: {
+              id_item: itemInCartList[i].id_item,
+              id_cart: itemInCartList[i].id_cart,
+            },
+          });
+          i++;
+        }
+        res.status(201).json({ message: "Đặt hàng thành công!" });
       }
+    } else {
+      res.status(400).json({ message: "Giỏ hàng của bạn đang trống!" });
+    }
   } catch (error) {
     res.status(500).json({ message: "Đặt hàng thất bại!" });
   }
 };
 
-const configPayment = require("../config/configpayment")
-const stripe = require("stripe")(configPayment.SECRET_KEY)
+const configPayment = require("../config/configpayment");
+const stripe = require("stripe")(configPayment.SECRET_KEY);
 
 const checkoutPayment = async (req, res) => {
-  res.render('Home',{
-    key:configPayment.PUBLISHABLE_KEY,
+  res.render("Home", {
+    key: configPayment.PUBLISHABLE_KEY,
     name: "Phạm Minh Mạnh",
-    amount: "150000"
-  })
+    amount: "150000",
+  });
 };
 
 const checkoutPayment2 = async (req, res) => {
-  stripe.customers.create({
-    email: req.body.stripeEmail,
-    source: req.body.stripeToken,
-    name: 'Tên khách hàng: Phạm Minh Mạnh',
-    address: {
-      country: "Việt Nam",
-      line1: "D2/084B ấp Nam Sơn xã Quang Trung huyện Thống Nhất tỉnh Đồng Nai"
-    }
-  })
-  .then((customer) => {
-    return stripe.charges.create({
-      amount: 150000,
-      description: "Thanh toán hoá đơn đặt hàng",
-      currency: "VND",
-      customer: customer.id
+  stripe.customers
+    .create({
+      email: req.body.stripeEmail,
+      source: req.body.stripeToken,
+      name: "Tên khách hàng: Phạm Minh Mạnh",
+      address: {
+        country: "Việt Nam",
+        line1:
+          "D2/084B ấp Nam Sơn xã Quang Trung huyện Thống Nhất tỉnh Đồng Nai",
+      },
     })
-  })
-  .then((charge) => {
-    console.log(charge)
-    res.status(200).json({message: "Success"})
-  })
-  .catch((err) => {
-    res.send(err)
-  })
+    .then((customer) => {
+      return stripe.charges.create({
+        amount: 150000,
+        description: "Thanh toán hoá đơn đặt hàng",
+        currency: "VND",
+        customer: customer.id,
+      });
+    })
+    .then((charge) => {
+      console.log(charge);
+      res.status(200).json({ message: "Success" });
+    })
+    .catch((err) => {
+      res.send(err);
+    });
 };
 
 // Hàm hỗ trợ tính khoảng cách
@@ -400,5 +457,6 @@ module.exports = {
   deleteOneItemInCart,
   checkout,
   checkoutPayment,
-  checkoutPayment2
+  checkoutPayment2,
+  getDeliFee
 };

@@ -57,10 +57,6 @@ app.post('/payment', (req,res) => {
     email: req.body.stripeEmail,
     source: req.body.stripeToken,
     name: 'Tên khách hàng: Phạm Minh Mạnh',
-    address: {
-      country: "Việt Nam",
-      line1: "D2/084B ấp Nam Sơn xã Quang Trung huyện Thống Nhất tỉnh Đồng Nai"
-    }
   })
   .then((customer) => {
     return stripe.charges.create({
@@ -71,11 +67,10 @@ app.post('/payment', (req,res) => {
     })
   })
   .then((charge) => {
-    console.log(charge)
     res.status(200).json({message: "Thanh toán thành công!"})
   })
   .catch((err) => {
-    res.send(err)
+    res.status(500).json({message: "Lỗi!"})
   })
 })
 
