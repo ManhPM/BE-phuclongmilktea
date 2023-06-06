@@ -473,6 +473,69 @@ module.exports = {
         name: "Kem tô",
         price: 15000,
       },
+      {
+        id_type: 4,
+        image:
+          "https://www.hoidaubepaau.com/wp-content/uploads/2018/11/vien-tran-chau.jpg",
+        name: "Trân châu đường đen",
+        price: 10000,
+      },
+      {
+        id_type: 4,
+        image:
+          "https://cong-news.appwifi.com/wp-content/uploads/2022/05/tra%CC%82n-cha%CC%82u-tra%CC%86%CC%81ng.jpg",
+        name: "Trân châu trắng",
+        price: 10000,
+      },
+      {
+        id_type: 4,
+        image:
+          "https://www.baobaclieu.vn/uploads/image/2021/05/26/8-7.jpg",
+        name: "Bánh flan",
+        price: 10000,
+      },
+      {
+        id_type: 4,
+        image:
+          "https://vn-live-01.slatic.net/p/adaeeddd5828d198f083234d905f5c7c.jpg",
+        name: "Thạch khoai môn",
+        price: 10000,
+      },
+      {
+        id_type: 4,
+        image:
+          "https://tamlong.com.vn/wp-content/uploads/2020/02/cach-lam-thach-pho-mai-vien-600x653.jpg",
+        name: "Thạch phô mai",
+        price: 10000,
+      },
+      {
+        id_type: 4,
+        image:
+          "https://img-global.cpcdn.com/recipes/2817058270df0df7/400x400cq70/photo.jpg",
+        name: "Sương sáo",
+        price: 10000,
+      },
+      {
+        id_type: 4,
+        image:
+          "https://hpcvietblog.files.wordpress.com/2019/09/d9479-topping-khuc-bach.jpg",
+        name: "Khúc bạch",
+        price: 10000,
+      },
+      {
+        id_type: 4,
+        image:
+          "https://product.hstatic.net/1000220639/product/upload_3d600247647042a8aaa46b6a3afa5de8.jpg",
+        name: "Hạt thuỷ tinh",
+        price: 10000,
+      },
+      {
+        id_type: 4,
+        image:
+          "https://minhhanhfood.vn/wp-content/uploads/2022/04/5cfdbc04cf04455f307ba6d1a84a8c98.jpeg",
+        name: "Trân châu hoàng kim",
+        price: 10000,
+      },
     ]);
   },
 

@@ -306,7 +306,7 @@ const processingItem = async (req, res) => {
       }
     );
     const ingredientList = await Item.sequelize.query(
-      "SELECT R.id_item, R.id_ingredient, IG.unit, IG.name as name_ingredient, (R.quantity*(:quantity)) as totalquantity, (SELECT quantity FROM ingredient_stores WHERE id_ingredient = R.id_ingredient AND id_store = :id_store) as quantity FROM recipes as R, ingredients as IG WHERE R.id_item = :id_item AND IG.id_ingredient = R.id_ingredient",
+      "SELECT R.id_item, R.id_ingredient, IG.unit, IG.name as name_ingredient, IG.image, (R.quantity*(:quantity)) as totalquantity, (SELECT quantity FROM ingredient_stores WHERE id_ingredient = R.id_ingredient AND id_store = :id_store) as quantity FROM recipes as R, ingredients as IG WHERE R.id_item = :id_item AND IG.id_ingredient = R.id_ingredient",
       {
         replacements: { id_item: id_item, quantity: quantity, id_store: staff[0].id_store },
         type: QueryTypes.SELECT,

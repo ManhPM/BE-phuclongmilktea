@@ -2,12 +2,12 @@ const { Ingredient, Staff } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const createIngredient = async (req, res) => {
-  const {name, unit} = req.body
+  const {name, unit, image} = req.body
   try {
     await Ingredient.create({
       name,
       unit,
-      quantity: 0
+      image,
     });
     res.status(200).json({message: "Tạo mới thành công!"});
   } catch (error) {
@@ -17,7 +17,7 @@ const createIngredient = async (req, res) => {
 
 const updateIngredient = async (req, res) => {
   const {id_ingredient} = req.params
-  const {name, unit} = req.body
+  const {name, unit, image} = req.body
   try {
     const update = await Ingredient.findOne({
       where: {
@@ -26,6 +26,7 @@ const updateIngredient = async (req, res) => {
     });
     update.name = name
     update.unit = unit
+    update.image = image
     await update.save();
     res.status(200).json({message: "Cập nhật thành công!"});
   } catch (error) {
@@ -55,7 +56,7 @@ const processingIngredient = async (req, res) => {
       }
     );
     const ingredientList = await Ingredient.sequelize.query(
-      "SELECT R.id_u_ingredient, R.id_ingredient, IG.unit, IG.name as name_ingredient, (R.quantity*(:quantity)) as totalquantity, (SELECT quantity FROM unprocessed_ingredient_stores WHERE id_u_ingredient = R.id_u_ingredient AND id_store = :id_store) as quantity FROM recipe_ingredients as R, unprocessed_ingredients as IG WHERE R.id_ingredient = :id_ingredient AND IG.id_u_ingredient = R.id_u_ingredient",
+      "SELECT R.id_u_ingredient, R.id_ingredient, IG.unit, IG.name as name_ingredient, IG.image, (R.quantity*(:quantity)) as totalquantity, (SELECT quantity FROM unprocessed_ingredient_stores WHERE id_u_ingredient = R.id_u_ingredient AND id_store = :id_store) as quantity FROM recipe_ingredients as R, unprocessed_ingredients as IG WHERE R.id_ingredient = :id_ingredient AND IG.id_u_ingredient = R.id_u_ingredient",
       {
         replacements: { id_ingredient: id_ingredient, quantity: quantity, id_store: staff[0].id_store },
         type: QueryTypes.SELECT,

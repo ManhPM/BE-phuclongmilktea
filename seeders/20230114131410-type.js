@@ -24,6 +24,10 @@ module.exports = {
         id_type: 3,
         name: "Bánh ngọt",
       },
+      {
+        id_type: 4,
+        name: "Topping",
+      },
     ]);
   },
 

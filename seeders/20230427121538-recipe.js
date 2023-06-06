@@ -121,6 +121,15 @@ module.exports = {
       { id_ingredient: 12, id_item: 58, quantity: 1  },
       { id_ingredient: 5, id_item: 59, quantity: 150  },
       { id_ingredient: 12, id_item: 59, quantity: 1  },
+      { id_ingredient: 10, id_item: 60, quantity: 1  },
+      { id_ingredient: 11, id_item: 61, quantity: 1  },
+      { id_ingredient: 12, id_item: 62, quantity: 1  },
+      { id_ingredient: 13, id_item: 63, quantity: 1  },
+      { id_ingredient: 14, id_item: 64, quantity: 1  },
+      { id_ingredient: 15, id_item: 65, quantity: 1  },
+      { id_ingredient: 16, id_item: 66, quantity: 1  },
+      { id_ingredient: 17, id_item: 67, quantity: 1  },
+      { id_ingredient: 18, id_item: 68, quantity: 1  },
     ]);
   },
 

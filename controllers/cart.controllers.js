@@ -237,7 +237,6 @@ const checkout = async (req, res) => {
     id_shipping_partner,
     userLat,
     userLng,
-    id_store,
     code,
   } = req.body;
   try {
@@ -254,12 +253,15 @@ const checkout = async (req, res) => {
         id_cart: info[0].id_cart,
       },
     });
-    if (itemInCartList.length) {
-      const store = await Store.findOne({
-        where: {
-          id_store
+    if (itemInCartList.length){
+      const store = await Cart.sequelize.query(
+        "SELECT id_store, name, address, phone, email, storeLng, storeLat, 6371 * ACOS(COS(RADIANS(:userLng)) * COS(RADIANS(storeLat)) * COS(RADIANS(storeLng) - RADIANS(:userLat)) + SIN(RADIANS(:userLng)) * SIN(RADIANS(storeLat))) AS distance FROM stores ORDER BY distance ASC LIMIT 1",
+        {
+          replacements: { userLat: userLat, userLng: userLng },
+          type: QueryTypes.SELECT,
+          raw: true,
         }
-      });
+      );
       const shipping_partner = await Shipping_partner.findOne({
         where: {
           id_shipping_partner
@@ -267,8 +269,8 @@ const checkout = async (req, res) => {
       });
       const date = new Date();
       date.setHours(date.getHours() + 7);
-      const storeLat = store.storeLat;
-      const storeLng = store.storeLng;
+      const storeLat = store[0].storeLat;
+      const storeLng = store[0].storeLng;
       let random = getDistanceFromLatLonInKm(
         userLat,
         userLng,
@@ -315,17 +317,13 @@ const checkout = async (req, res) => {
             id_payment,
             delivery_fee: random,
             item_fee: Number(total[0].item_fee),
-            total:
-              Number(total[0].item_fee) -
-              (Number(total[0].item_fee) * discount.discount_percent) / 100 +
-              random,
-            discount_fee:
-              (Number(total[0].item_fee) * discount.discount_percent) / 100,
+            total:Number(total[0].item_fee) - (Number(total[0].item_fee) * discount.discount_percent) / 100 + random,
+            discount_fee:(Number(total[0].item_fee) * discount.discount_percent) / 100,
             time_order: date,
             id_customer: info[0].id_customer,
             id_shipping_partner,
             status: 0,
-            id_store,
+            id_store: store[0].id_store,
           });
           let i = 0;
           while (itemInCartList[i]) {
@@ -361,7 +359,7 @@ const checkout = async (req, res) => {
           id_customer: info[0].id_customer,
           id_shipping_partner,
           status: 0,
-          id_store,
+          id_store: store[0].id_store,
         });
         let i = 0;
         while (itemInCartList[i]) {

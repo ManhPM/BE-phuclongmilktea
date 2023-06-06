@@ -48,15 +48,16 @@ app.use(bodyParser.json())
 app.get('/', (req,res) => {
   res.render('Home',{
     key:configPayment.PUBLISHABLE_KEY,
-    name: "Phạm Minh Mạnh",
+    name: "Nguyễn Thành Trung",
     amount: "150000"
   })
 })
 app.post('/payment', (req,res) => {
+  console.log(req.body)
   stripe.customers.create({
     email: req.body.stripeEmail,
     source: req.body.stripeToken,
-    name: 'Tên khách hàng: Phạm Minh Mạnh',
+    name: 'Phạm Minh Mạnh',
   })
   .then((customer) => {
     return stripe.charges.create({
