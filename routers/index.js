@@ -14,6 +14,7 @@ const { unprocessedIngredientRouter } = require("./unprocessedingredient.routers
 const { storeRouter } = require("./store.routers");
 const { staffRouter } = require("./staff.routers");
 const { discountRouter } = require("./discount.routers");
+const { shippingPartnerRouter } = require("./shippingpartner.routers");
 const rootRouter = express.Router();
 
 rootRouter.use("/items", itemRouter);
@@ -31,6 +32,7 @@ rootRouter.use("/unprocessedingredients", unprocessedIngredientRouter);
 rootRouter.use("/stores", storeRouter);
 rootRouter.use("/staffs", staffRouter);
 rootRouter.use("/discounts", discountRouter);
+rootRouter.use("/shipping_partners", shippingPartnerRouter);
 
 module.exports = {
     rootRouter,

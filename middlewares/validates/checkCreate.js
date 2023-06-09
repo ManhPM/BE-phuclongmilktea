@@ -248,6 +248,22 @@ const checkDiscountCode = async (req, res, next) => {
   }
 }
 
+const checkCreateShippingPartner = (Model) => {
+  return async (req, res, next) => {
+    const { name } = req.body;
+    const item = await Model.findOne({
+      where: {
+        name,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Đơn vị vận chuyển đã tồn tại!" });
+    }
+  };
+};
+
 module.exports = {
   checkCreateAccount,
   checkCreateItem,
@@ -261,5 +277,6 @@ module.exports = {
   checkCreateIngredient,
   checkCreateEmail,
   checkPhoneCheckout,
-  checkDiscountCode
+  checkDiscountCode,
+  checkCreateShippingPartner
 };

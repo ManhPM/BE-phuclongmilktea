@@ -83,7 +83,7 @@ const getAllItem = async (req, res) => {
     if (name) {
       if (id_type) {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND T.id_type = :id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
           {
             replacements: {
               name: `%${name}%`,
@@ -96,7 +96,7 @@ const getAllItem = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -112,7 +112,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -129,7 +129,7 @@ const getAllItem = async (req, res) => {
         }
       } else {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
           {
             replacements: { name: `%${name}%`, perPage: perPage },
             type: QueryTypes.SELECT,
@@ -138,7 +138,7 @@ const getAllItem = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 name: `%${name}%`,
@@ -152,7 +152,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 name: `%${name}%`,
@@ -169,7 +169,7 @@ const getAllItem = async (req, res) => {
     } else {
       if (id_type) {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND T.id_type = :id_type",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type",
           {
             replacements: { id_type: id_type },
             type: QueryTypes.SELECT,
@@ -178,7 +178,7 @@ const getAllItem = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -192,7 +192,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -207,7 +207,7 @@ const getAllItem = async (req, res) => {
         }
       } else {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) AS totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0",
+          "SELECT COUNT(I.id_item) AS totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0",
           {
             replacements: { perPage: perPage },
             type: QueryTypes.SELECT,
@@ -217,7 +217,7 @@ const getAllItem = async (req, res) => {
         if (typesort == 1) {
           //gia tang dan
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: { from: (page - 1) * perPage, perPage: perPage },
               type: QueryTypes.SELECT,
@@ -228,7 +228,7 @@ const getAllItem = async (req, res) => {
         } else {
           // gia giam dan
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: { from: (page - 1) * perPage, perPage: perPage },
               type: QueryTypes.SELECT,
@@ -248,7 +248,7 @@ const getDetailItem = async (req, res) => {
   const { id_item } = req.params;
   try {
     const item = await Item.sequelize.query(
-      "SELECT I.*, T.name as name_type, (SELECT COUNT(id_item) FROM items WHERE id_item = I.id_item) as countLike FROM items AS I, types as T WHERE T.id_type = I.id_type AND I.id_item = :id_item",
+      "SELECT I.*, T.name as name_type, (SELECT COUNT(id_item) FROM items WHERE id_item = I.id_item) as countLike FROM items AS I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.id_item = :id_item",
       {
         replacements: { id_item: id_item },
         type: QueryTypes.SELECT,
@@ -264,7 +264,7 @@ const getDetailItem = async (req, res) => {
 const get3ItemsEachType = async (req, res) => {
   try {
     const itemsEachType = await Item.sequelize.query(
-      "SELECT * FROM (SELECT I.*, T.name AS name_type, row_number() over (partition by I.id_type) as type_rank FROM items as I, types as T WHERE I.id_type = T.id_type ORDER BY I.price ASC) test WHERE type_rank <= 3",
+      "SELECT * FROM (SELECT I.*, T.name AS name_type, row_number() over (partition by I.id_type) as type_rank FROM items as I, types as T WHERE I.id_type = T.id_type AND T.id_type != 4 ORDER BY I.price ASC) test WHERE type_rank <= 3",
       {
         type: QueryTypes.SELECT,
         raw: true,
@@ -280,7 +280,7 @@ const getItems = async (req, res) => {
   const { quantity } = req.query;
   try {
     const items = await Item.sequelize.query(
-      "SELECT I.*, T.name FROM items as I, types as T WHERE I.id_type = T.id_type ORDER BY I.price ASC LIMIT :quantity",
+      "SELECT I.*, T.name FROM items as I, types as T WHERE I.id_type = T.id_type AND T.id_type != 4 ORDER BY I.price ASC LIMIT :quantity",
       {
         replacements: { quantity: Number(quantity) },
         type: QueryTypes.SELECT,
@@ -292,6 +292,22 @@ const getItems = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+const getTopping = async (req, res) => {
+  try {
+    const items = await Item.sequelize.query(
+      "SELECT I.* FROM items as I WHERE I.id_type = 4",
+      {
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(200).json({ items });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 
 const processingItem = async (req, res) => {
   const {id_item} = req.params
@@ -363,5 +379,6 @@ module.exports = {
   updateItem,
   deleteItem,
   getItems,
-  processingItem
+  processingItem,
+  getTopping
 };
