@@ -327,6 +327,28 @@ const refreshToken = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const {name, phone, address} = req.body
+    const account = await Account.findOne({
+      where: {
+        username: req.username
+      }
+    })
+    await Account.sequelize.query(
+      "UPDATE customers SET name = :name, phone = :phone, address = :address WHERE id_account = :id_account",
+      {
+        replacements: { name: `${name}`, phone: `${phone}`, address: `${address}`, id_account: account.id_account},
+        type: QueryTypes.UPDATE,
+        raw: true,
+      }
+    );
+    res.status(200).json({message: "Cập nhật thông tin thành công!"})
+  } catch (error) {
+    res.status(500).json({message: "Cập nhật thông tin thất bại!"})
+  }
+};
+
 const uploadAvatar = async (req, res) => {
   const {image} = req.body
   try {
@@ -340,6 +362,7 @@ const uploadAvatar = async (req, res) => {
         id_account: account.id_account
       }
     })
+    console.log("cc")
     update.image = image
     await update.save();
     res.status(200).json({message: "Cập nhật ảnh đại diện thành công!"})
@@ -537,4 +560,5 @@ module.exports = {
   createAccountForStaff,
   refreshToken,
   uploadAvatar,
+  updateProfile
 };
