@@ -147,7 +147,15 @@ const getAllItemInOrder = async (req, res) => {
         raw: true,
       }
     );
-    res.status(200).json({ itemList });
+    const order = await Order.sequelize.query(
+      "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order",
+      {
+        replacements: { id_order: id_order },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(200).json({info: order[0], itemList});
   } catch (error) {
     res.status(500).json(error);
   }
