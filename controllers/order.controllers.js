@@ -22,7 +22,7 @@ const getAllOrder = async (req, res) => {
         }
       );
       const orderList = await Order.sequelize.query(
-        "SELECT O.id_order, O.total, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order FROM orders as O WHERE O.id_customer = :id_customer",
+        "SELECT O.id_order, O.delivery_fee, O.discount_fee, O.item_fee, O.total, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order FROM orders as O WHERE O.id_customer = :id_customer",
         {
           replacements: { id_customer: customer[0].id_customer },
           type: QueryTypes.SELECT,

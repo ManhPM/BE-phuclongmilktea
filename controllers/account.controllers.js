@@ -4,7 +4,7 @@ const {
   Customer,
   Wishlist,
   Cart,
-  Staff
+  Staff,
 } = require("../models");
 const { QueryTypes } = require("sequelize");
 const jwt = require("jsonwebtoken");
@@ -129,7 +129,7 @@ const createAccountForStaff = async (req, res) => {
     });
     await Staff.create({
       id_account: newAccount.id_account,
-      id_store,  
+      id_store,
       name,
       gender,
       email,
@@ -296,6 +296,28 @@ const login = async (req, res) => {
   }
 };
 
+const getUserInfo = async (req, res) => {
+  try {
+    const account = await Account.findOne({
+      where: {
+        username: req.username,
+      },
+    });
+    const customer = await Customer.findOne({
+      where: {
+        id_account: account.id_account,
+      },
+    });
+    res.status(200).json({
+      userInfo: customer,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lấy thông tin user thất bại!",
+    });
+  }
+};
+
 const refreshToken = async (req, res) => {
   try {
     const account = await Account.findOne({
@@ -329,45 +351,50 @@ const refreshToken = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const {name, phone, address} = req.body
+    const { name, phone, address } = req.body;
     const account = await Account.findOne({
       where: {
-        username: req.username
-      }
-    })
+        username: req.username,
+      },
+    });
     await Account.sequelize.query(
       "UPDATE customers SET name = :name, phone = :phone, address = :address WHERE id_account = :id_account",
       {
-        replacements: { name: `${name}`, phone: `${phone}`, address: `${address}`, id_account: account.id_account},
+        replacements: {
+          name: `${name}`,
+          phone: `${phone}`,
+          address: `${address}`,
+          id_account: account.id_account,
+        },
         type: QueryTypes.UPDATE,
         raw: true,
       }
     );
-    res.status(200).json({message: "Cập nhật thông tin thành công!"})
+    res.status(200).json({ message: "Cập nhật thông tin thành công!" });
   } catch (error) {
-    res.status(500).json({message: "Cập nhật thông tin thất bại!"})
+    res.status(500).json({ message: "Cập nhật thông tin thất bại!" });
   }
 };
 
 const uploadAvatar = async (req, res) => {
-  const {image} = req.body
+  const { image } = req.body;
   try {
     const account = await Account.findOne({
       where: {
-        username: req.username
-      }
-    })
+        username: req.username,
+      },
+    });
     const update = await Customer.findOne({
       where: {
-        id_account: account.id_account
-      }
-    })
-    console.log("cc")
-    update.image = image
+        id_account: account.id_account,
+      },
+    });
+    console.log("cc");
+    update.image = image;
     await update.save();
-    res.status(200).json({message: "Cập nhật ảnh đại diện thành công!"})
+    res.status(200).json({ message: "Cập nhật ảnh đại diện thành công!" });
   } catch (error) {
-    res.status(500).json({message: "Đã có lỗi xảy ra!"})
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -442,12 +469,11 @@ const forgotPassword = async (req, res) => {
           },
         }
       );
-      if(account[0].isActive == 0){
+      if (account[0].isActive == 0) {
         res.status(400).json({
           message: `Địa chỉ email chưa được xác minh!`,
         });
-      }
-      else {
+      } else {
         await Account.sequelize.query(
           "UPDATE accounts SET forgot = :randomID WHERE username = :username",
           {
@@ -544,7 +570,6 @@ const accessForgotPassword = async (req, res, next) => {
   }
 };
 
-
 module.exports = {
   login,
   loginStaff,
@@ -560,5 +585,6 @@ module.exports = {
   createAccountForStaff,
   refreshToken,
   uploadAvatar,
-  updateProfile
+  updateProfile,
+  getUserInfo,
 };

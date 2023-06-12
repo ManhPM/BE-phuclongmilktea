@@ -1,6 +1,6 @@
 const express = require("express");
 const {Account} = require("../models")
-const {login, logout, createAccountForCustomer, changePassword, forgotPassword, loginAdmin, verify, accessForgotPassword, loginShipper, createAccountForShipper, loginStaff, refreshToken, uploadAvatar, createAccountForStaff, updateProfile} = require("../controllers/account.controllers");
+const {login, logout, createAccountForCustomer, changePassword, forgotPassword, loginAdmin, verify, accessForgotPassword, loginShipper, createAccountForShipper, loginStaff, refreshToken, uploadAvatar, createAccountForStaff, updateProfile, getUserInfo} = require("../controllers/account.controllers");
 const { checkExistAccount } = require("../middlewares/validates/checkExist");
 const { checkCreateAccount, checkCreateEmail } = require("../middlewares/validates/checkCreate");
 const {authenticate, authenticateRefreshToken} = require("../middlewares/auth/authenticate.js")
@@ -15,6 +15,7 @@ accountRouter.post("/avatar", authenticate, uploadAvatar);
 accountRouter.post("/admin/login", checkExistAccount(Account), loginAdmin);
 accountRouter.post("/shipper/login", checkExistAccount(Account), loginShipper);
 accountRouter.get("/logout", authenticate, logout);
+accountRouter.get("/userinfo", authenticate, authorize(["Khách hàng"]), getUserInfo);
 accountRouter.post("/create", checkCreateAccount(Account), checkCreateEmail, createAccountForCustomer);
 accountRouter.post("/shipper/create", authenticate, authorize(["Admin"]), checkCreateAccount(Account), checkCreateEmail, createAccountForShipper);
 accountRouter.post("/staff/create", authenticate, authorize(["Admin"]), checkCreateAccount(Account), checkCreateEmail, createAccountForStaff);

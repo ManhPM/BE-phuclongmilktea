@@ -264,6 +264,30 @@ const checkCreateShippingPartner = (Model) => {
   };
 };
 
+const checkUnConfirmedOrder = (Model) => {
+  return async (req, res, next) => {
+    const info = await Customer.sequelize.query(
+      "SELECT C.*, CU.phone FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const item = await Model.findOne({
+      where: {
+        id_customer: info[0].id_customer,
+        status: 0,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Đang có đơn hàng chưa xác nhận, không thể đặt thêm!" });
+    }
+  };
+};
+
 module.exports = {
   checkCreateAccount,
   checkCreateItem,
@@ -278,5 +302,6 @@ module.exports = {
   checkCreateEmail,
   checkPhoneCheckout,
   checkDiscountCode,
-  checkCreateShippingPartner
+  checkCreateShippingPartner,
+  checkUnConfirmedOrder,
 };
