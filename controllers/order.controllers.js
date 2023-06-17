@@ -1,4 +1,4 @@
-const { Order, Order_detail, Item_store } = require("../models");
+const { Order, Order_detail, Item_store, Report, Report_detail } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const getAllOrder = async (req, res) => {
@@ -155,7 +155,7 @@ const getAllItemInOrder = async (req, res) => {
         raw: true,
       }
     );
-    res.status(200).json({info: order[0], itemList});
+    res.status(200).json({ info: order[0], itemList });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -205,7 +205,11 @@ const confirmOrder = async (req, res) => {
           await Order.sequelize.query(
             "UPDATE item_stores SET quantity = quantity - (:quantity) WHERE id_item = :id_item AND id_store = :id_store",
             {
-              replacements: { id_item: itemListInOrder[j].id_item, quantity: itemListInOrder[j].quantity, id_store: staff[0].id_store },
+              replacements: {
+                id_item: itemListInOrder[j].id_item,
+                quantity: itemListInOrder[j].quantity,
+                id_store: staff[0].id_store,
+              },
               type: QueryTypes.SELECT,
               raw: true,
             }
@@ -245,7 +249,9 @@ const cancelOrder = async (req, res) => {
     } else {
       res
         .status(400)
-        .json({ message: "Thao tác thất bại. Đơn hàng đã được xác nhận hoặc đã huỷ!" });
+        .json({
+          message: "Thao tác thất bại. Đơn hàng đã được xác nhận hoặc đã huỷ!",
+        });
     }
   } catch (error) {
     res.status(500).json({ message: "Thao tác thất bại!" });
@@ -268,7 +274,11 @@ const thongKeSanPham = async (req, res) => {
       const thongKe = await Order_detail.sequelize.query(
         "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0 AND orders.time_order BETWEEN :tuNgay AND :denNgay) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0 AND orders.time_order BETWEEN :tuNgay AND :denNgay) as total, I.*, T.name AS name_type FROM items as I, order_details as OD, types as T, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store AND O.time_order BETWEEN :tuNgay AND :denNgay GROUP BY I.id_item ORDER BY sold DESC",
         {
-          replacements: { tuNgay: `${tuNgay}`, denNgay: `${denNgay}`, id_store: staff[0].id_store },
+          replacements: {
+            tuNgay: `${tuNgay}`,
+            denNgay: `${denNgay}`,
+            id_store: staff[0].id_store,
+          },
           type: QueryTypes.SELECT,
           raw: true,
         }
@@ -286,6 +296,56 @@ const thongKeSanPham = async (req, res) => {
       );
       res.status(200).json({ itemList: thongKe });
     }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const createReport = async (req, res) => {
+  try {
+    const staff = await Order.sequelize.query(
+      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const date = new Date();
+    date.setHours(date.getHours() + 7);
+    const itemList = await Order_detail.sequelize.query(
+      "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as total, I.id_item FROM items as I, order_details as OD, types as T, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store GROUP BY I.id_item ORDER BY sold DESC",
+      {
+        replacements: { id_store: staff[0].id_store },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const doanhThu = await Order_detail.sequelize.query(
+      "SELECT DISTINCT SUM((SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0)) as total, (SELECT COUNT(*) FROM orders WHERE orders.id_store = :id_store AND orders.id_order = O.id_order) as countOrder FROM items as I, order_details as OD, types as T, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store GROUP BY I.id_item",
+      {
+        replacements: { id_store: staff[0].id_store },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const report = await Report.create({
+      id_store: staff[0].id_store,
+      revenue: doanhThu[0].total,
+      date,
+      countOrder: doanhThu[0].countOrder
+    });
+    let i = 0;
+    while(itemList[i]){
+      await Report_detail.create({
+        id_report: report.id_report,
+        id_item: itemList[i].id_item,
+        sold: itemList[i].sold,
+        total: itemList[i].total
+      });
+      i++;
+    }
+    res.status(200).json({ message: "Tạo mới báo cáo thành công!" });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -326,7 +386,11 @@ const thongKeDonHang = async (req, res) => {
         const orderList = await Order_detail.sequelize.query(
           "SELECT O.id_order, SP.name as name_shipping_partner, O.total, O.item_fee, O.delivery_fee, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, O.description, O.status, P.name as name_payment, C.name as name_customer FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.time_order BETWEEN :tuNgay AND :denNgay AND O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner",
           {
-            replacements: { tuNgay: `${tuNgay}`, denNgay: `${denNgay}`, id_store: staff[0].id_store },
+            replacements: {
+              tuNgay: `${tuNgay}`,
+              denNgay: `${denNgay}`,
+              id_store: staff[0].id_store,
+            },
             type: QueryTypes.SELECT,
             raw: true,
           }
@@ -370,7 +434,11 @@ const thongKeSanPhamAdmin = async (req, res) => {
       const thongKe = await Order_detail.sequelize.query(
         "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0 AND orders.time_order BETWEEN :tuNgay AND :denNgay) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0 AND orders.time_order BETWEEN :tuNgay AND :denNgay) as total, I.*, T.name AS name_type FROM items as I, order_details as OD, types as T, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store AND O.time_order BETWEEN :tuNgay AND :denNgay GROUP BY I.id_item ORDER BY sold DESC",
         {
-          replacements: { tuNgay: `${tuNgay}`, denNgay: `${denNgay}`, id_store: id_store },
+          replacements: {
+            tuNgay: `${tuNgay}`,
+            denNgay: `${denNgay}`,
+            id_store: id_store,
+          },
           type: QueryTypes.SELECT,
           raw: true,
         }
@@ -420,7 +488,11 @@ const thongKeDonHangAdmin = async (req, res) => {
         const orderList = await Order_detail.sequelize.query(
           "SELECT O.id_order, SP.name as name_shipping_partner, O.total, O.item_fee, O.delivery_fee, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, O.description, O.status, P.name as name_payment, C.name as name_customer FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.time_order BETWEEN :tuNgay AND :denNgay AND O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner",
           {
-            replacements: { tuNgay: `${tuNgay}`, denNgay: `${denNgay}`, id_store: id_store },
+            replacements: {
+              tuNgay: `${tuNgay}`,
+              denNgay: `${denNgay}`,
+              id_store: id_store,
+            },
             type: QueryTypes.SELECT,
             raw: true,
           }
@@ -466,5 +538,6 @@ module.exports = {
   thongKeSanPham,
   thongKeDonHang,
   thongKeDonHangAdmin,
-  thongKeSanPhamAdmin
+  thongKeSanPhamAdmin,
+  createReport,
 };

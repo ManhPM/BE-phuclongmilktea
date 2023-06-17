@@ -575,7 +575,6 @@ module.exports = {
   loginStaff,
   loginShipper,
   loginAdmin,
-  logout,
   changePassword,
   forgotPassword,
   verify,

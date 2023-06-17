@@ -1,11 +1,12 @@
 const express = require("express");
 const {authenticate} = require("../middlewares/auth/authenticate.js")
 const {authorize} = require("../middlewares/auth/authorize.js");
-const { getAllItemInOrder, getAllOrder, confirmOrder, cancelOrder, thongKeSanPham, thongKeDonHang, getAllOrderForShipper, receiveOrder, thongKeSanPhamAdmin, thongKeDonHangAdmin } = require("../controllers/order.controllers");
+const { getAllItemInOrder, getAllOrder, confirmOrder, cancelOrder, thongKeSanPham, thongKeDonHang, getAllOrderForShipper, receiveOrder, thongKeSanPhamAdmin, thongKeDonHangAdmin, createReport } = require("../controllers/order.controllers");
 const orderRouter = express.Router();
 
 orderRouter.get("/", authenticate, getAllOrder);
 orderRouter.get("/ship", authenticate, authorize(["Shipper"]), getAllOrderForShipper);
+orderRouter.post("/report", authenticate, authorize(["Quản lý"]), createReport);
 orderRouter.get("/receive/:id_order", authenticate, authorize(["Shipper"]), receiveOrder);
 orderRouter.get("/detail/:id_order", getAllItemInOrder);
 orderRouter.get("/confirm/:id_order", authenticate, authorize(["Nhân viên"]), confirmOrder);
