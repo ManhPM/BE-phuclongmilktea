@@ -13,6 +13,10 @@ module.exports = {
         references: { model: "Staffs", key: "id_staff" },
         allowNull: false
       },
+      status: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       datetime: {
         type: Sequelize.DATE,
         allowNull: false

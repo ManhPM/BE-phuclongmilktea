@@ -7,6 +7,7 @@ module.exports = {
         id_staff: 1,
         datetime: "2023-01-23 06:30:00",
         description: "Xuất hàng",
+        status: 1,
       },
     ]);
   },

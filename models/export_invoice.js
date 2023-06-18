@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     }, 
     datetime: DataTypes.DATE,
+    status: DataTypes.INTEGER,
     description: DataTypes.STRING
   }, {
     sequelize,

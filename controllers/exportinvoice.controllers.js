@@ -1,4 +1,4 @@
-const { Export_invoice } = require("../models");
+const { Export_invoice, Export_invoice_detail } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 
@@ -71,7 +71,118 @@ const getAllItemInExportInvoice = async (req, res) => {
   }
 };
 
+const createExportInvoice = async (req, res) => {
+  const {description} = req.body
+  try {
+    const staff = await Export_invoice.sequelize.query(
+      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND S.id_account = A.id_account",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const datetime = new Date();
+    datetime.setHours(datetime.getHours() + 7);
+    await Export_invoice.create({description, id_staff: staff[0].id_staff, datetime, status: 0})
+  res.status(200).json({ message: "Tạo mới thành công!" });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const updateExportInvoice = async (req, res) => {
+  const {id_e_invoice} = req.params
+  const {description, status} = req.body
+  try {
+    const update = await Export_invoice.findOne({
+      where: {
+        id_e_invoice
+      }
+    });
+    const datetime = new Date();
+    datetime.setHours(datetime.getHours() + 7);
+    update.description = description
+    update.datetime = datetime
+    update.status = status
+    await update.save();
+    res.status(200).json({ message: "Cập nhật thành công!" });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const createExportInvoiceDetail = async (req, res) => {
+  const {quantity, id_e_invoice, id_u_ingredient} = req.body
+  try {
+    await Export_invoice_detail.create({id_e_invoice, id_u_ingredient, quantity, status: 0})
+  res.status(200).json({ message: "Tạo mới thành công!" });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const updateExportInvoiceDetail = async (req, res) => {
+  const {id_e_invoice, id_u_ingredient} = req.params
+  const {quantity} = req.body
+  try {
+    const check = await Export_invoice.findOne({
+      where: {
+        id_e_invoice
+      }
+    });
+    if(check.status != 1){
+      const update = await Export_invoice_detail.findOne({
+        where: {
+          id_e_invoice,
+          id_u_ingredient
+        }
+      });
+      update.quantity = quantity
+      await update.save();
+      res.status(200).json({ message: "Cập nhật thành công!" });
+    }
+    else{
+      res.status(400).json({ message: "Không thể cập nhật hoá đơn đã hoàn thành!" });
+    }
+    
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const deleteExportInvoiceDetail = async (req, res) => {
+  const {id_e_invoice, id_u_ingredient} = req.params
+  try {
+    const check = await Export_invoice.findOne({
+      where: {
+        id_e_invoice
+      }
+    });
+    if(check.status != 1){
+      await Export_invoice_detail.destroy({
+        where: {
+          id_e_invoice,
+          id_u_ingredient
+        }
+      });
+      res.status(200).json({ message: "Xoá thành công!" });
+    }
+    else{
+      res.status(400).json({ message: "Không thể xoá hoá đơn đã hoàn thành!" });
+    }
+  
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 module.exports = {
     getAllExportInvoice,
-    getAllItemInExportInvoice
+    getAllItemInExportInvoice,
+    updateExportInvoice,
+    createExportInvoice,
+    createExportInvoiceDetail,
+    updateExportInvoiceDetail,
+    deleteExportInvoiceDetail
 };
