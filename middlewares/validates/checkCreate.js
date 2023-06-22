@@ -2,7 +2,9 @@ const {
   Shipper,
   Customer,
   Staff,
-  Discount
+  Discount,
+  Import_invoice_detail,
+  Export_invoice_detail
 } = require("../../models");
 const { QueryTypes } = require("sequelize");
 
@@ -288,6 +290,48 @@ const checkUnConfirmedOrder = (Model) => {
   };
 };
 
+const checkCreateImportInvoiceDetail = async (req, res, next) => {
+  const {id_u_ingredient, id_i_invoice} = req.body
+    try {
+      const item = await Import_invoice_detail.sequelize.query(
+        "SELECT * FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice AND id_u_ingredient = :id_u_ingredient",
+        {
+          replacements: { id_i_invoice, id_u_ingredient },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      if (!item[0]) {
+        next();
+      } else {
+        res.status(400).json({ message: "Đã có sản phẩm này trong hoá đơn!" });
+      }
+    } catch (error) {
+      res.status(501).json({ message: "Đã có lỗi xảy ra!" });
+    }
+}
+
+const checkCreateExportInvoiceDetail = async (req, res, next) => {
+  const {id_u_ingredient, id_e_invoice} = req.body
+    try {
+      const item = await Export_invoice_detail.sequelize.query(
+        "SELECT * FROM export_invoice_details WHERE id_e_invoice = :id_e_invoice AND id_u_ingredient = :id_u_ingredient",
+        {
+          replacements: { id_e_invoice, id_u_ingredient },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      if (!item[0]) {
+        next();
+      } else {
+        res.status(400).json({ message: "Đã có sản phẩm này trong hoá đơn!" });
+      }
+    } catch (error) {
+      res.status(501).json({ message: "Đã có lỗi xảy ra!" });
+    }
+}
+
 module.exports = {
   checkCreateAccount,
   checkCreateItem,
@@ -304,4 +348,6 @@ module.exports = {
   checkDiscountCode,
   checkCreateShippingPartner,
   checkUnConfirmedOrder,
+  checkCreateExportInvoiceDetail,
+  checkCreateImportInvoiceDetail
 };

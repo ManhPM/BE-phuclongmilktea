@@ -37,7 +37,14 @@ const updateIngredient = async (req, res) => {
 const getAllIngredient = async (req, res) => {
   try {
     const itemList = await Ingredient.findAll({});
-    res.status(201).json({itemList});
+    const totalItems = await Ingredient.sequelize.query(
+      "SELECT COUNT(*) as total FROM ingredients",
+      {
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(201).json({totalItems: totalItems[0].total, itemList});
   } catch (error) {
     res.status(500).json(error);
   }
@@ -105,8 +112,23 @@ const processingIngredient = async (req, res) => {
   }
 };
 
+const getDetailIngredient = async (req, res) => {
+  const {id_ingredient} = req.params
+  try {
+    const item = await Ingredient.findOne({
+      where: {
+        id_ingredient
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 module.exports = {
     getAllIngredient,
+    getDetailIngredient,
     processingIngredient,
     createIngredient,
     updateIngredient

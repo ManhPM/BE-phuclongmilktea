@@ -36,8 +36,23 @@ const updatePaymentMethod = async (req, res) => {
   }
 };
 
+const getDetailPaymentMethod = async (req, res) => {
+  const {id_payment} = req.params
+  try {
+    const item = await Payment_method.findOne({
+      where: {
+        id_payment
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 module.exports = {
   getAllPaymentMethod,
+  getDetailPaymentMethod,
   createPaymentMethod,
   updatePaymentMethod
 };

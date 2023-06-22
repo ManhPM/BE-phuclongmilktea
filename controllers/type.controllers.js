@@ -43,9 +43,24 @@ const getAllType = async (req, res) => {
   }
 };
 
+const getDetailType = async (req, res) => {
+  const {id_type} = req.params
+  try {
+    const item = await Type.findOne({
+      where: {
+        id_type
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 
 module.exports = {
     getAllType,
     createType,
     updateType,
+    getDetailType,
 };

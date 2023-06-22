@@ -38,8 +38,23 @@ const updateShippingPartner = async (req, res) => {
   }
 };
 
+const getDetailShippingPartner = async (req, res) => {
+  const {id_shipping_partner} = req.params
+  try {
+    const item = await Shipping_partner.findOne({
+      where: {
+        id_shipping_partner
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 module.exports = {
     getAllShippingPartner,
     createShippingPartner,
-    updateShippingPartner
+    updateShippingPartner,
+    getDetailShippingPartner
 };

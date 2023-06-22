@@ -57,8 +57,23 @@ const updateStaff = async (req, res) => {
   }
 };
 
+const getDetailStaff = async (req, res) => {
+  const {id_staff} = req.params
+  try {
+    const item = await Staff.findOne({
+      where: {
+        id_staff
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 module.exports = {
   getAllStaff,
+  getDetailStaff,
   createStaff,
   updateStaff
 };

@@ -113,10 +113,10 @@ const updateExportInvoice = async (req, res) => {
 };
 
 const createExportInvoiceDetail = async (req, res) => {
-  const {quantity, id_e_invoice, id_u_ingredient} = req.body
+  const {quantity, id_e_invoice, id_u_ingredient, unit_price} = req.body
   try {
-    await Export_invoice_detail.create({id_e_invoice, id_u_ingredient, quantity, status: 0})
-  res.status(200).json({ message: "Tạo mới thành công!" });
+    await Export_invoice_detail.create({id_e_invoice, id_u_ingredient, quantity, status: 0, unit_price})
+    res.status(200).json({ message: "Tạo mới thành công!" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -132,14 +132,14 @@ const updateExportInvoiceDetail = async (req, res) => {
       }
     });
     if(check.status != 1){
-      const update = await Export_invoice_detail.findOne({
-        where: {
-          id_e_invoice,
-          id_u_ingredient
+      await Export_invoice_detail.sequelize.query(
+        "UPDATE export_invoice_details SET quantity = :quantity WHERE id_e_invoice = :id_e_invoice AND id_u_ingredient = :id_u_ingredient",
+        {
+          replacements: { id_e_invoice, id_u_ingredient, quantity },
+          type: QueryTypes.UPDATE,
+          raw: true,
         }
-      });
-      update.quantity = quantity
-      await update.save();
+      );
       res.status(200).json({ message: "Cập nhật thành công!" });
     }
     else{
@@ -177,12 +177,25 @@ const deleteExportInvoiceDetail = async (req, res) => {
   }
 };
 
+const getDetailExportInvoice = async (req, res) => {
+  const {id_e_invoice} = req.params
+  try {
+    const item = await Export_invoice.findOne({
+      where: {
+        id_e_invoice
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
+
 module.exports = {
     getAllExportInvoice,
+    getDetailExportInvoice,
     getAllItemInExportInvoice,
     updateExportInvoice,
     createExportInvoice,
-    createExportInvoiceDetail,
-    updateExportInvoiceDetail,
-    deleteExportInvoiceDetail
 };

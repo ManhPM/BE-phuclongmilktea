@@ -83,9 +83,23 @@ const updatePositionOfStore = async (req, res) => {
   }
 };
 
+const getDetailStore = async (req, res) => {
+  const {id_store} = req.params
+  try {
+    const item = await Store.findOne({
+      where: {
+        id_store
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
 
 module.exports = {
     getAllStore,
+    getDetailStore,
     getAllStoreForUser,
     createStore,
     updateStore,

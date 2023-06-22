@@ -1,9 +1,17 @@
 const { Unprocessed_ingredient } = require("../models");
+const { QueryTypes } = require("sequelize");
 
 const getAllUnprocessedIngredient = async (req, res) => {
   try {
+    const totalItems = await Unprocessed_ingredient.sequelize.query(
+      "SELECT COUNT(*) as total FROM unprocessed_ingredients",
+      {
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
     const itemList = await Unprocessed_ingredient.findAll({});
-    res.status(201).json({itemList});
+    res.status(201).json({totalItems: totalItems[0].total, itemList});
   } catch (error) {
     res.status(500).json(error);
   }
@@ -40,9 +48,24 @@ const updateUnprocessedIngredient= async (req, res) => {
   }
 };
 
+const getDetailUnprocessedIngredient = async (req, res) => {
+  const {id_u_ingredient} = req.params
+  try {
+    const item = await Unprocessed_ingredient.findOne({
+      where: {
+        id_u_ingredient
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 
 module.exports = {
     getAllUnprocessedIngredient,
     createUnprocessedIngredient,
-    updateUnprocessedIngredient
+    updateUnprocessedIngredient,
+    getDetailUnprocessedIngredient
 };

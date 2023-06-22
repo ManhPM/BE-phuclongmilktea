@@ -43,8 +43,23 @@ const updateDiscount = async (req, res) => {
   }
 };
 
+const getDetailDiscount = async (req, res) => {
+  const {code} = req.params
+  try {
+    const item = await Discount.findOne({
+      where: {
+        code
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 module.exports = {
   getAllDiscount,
   createDiscount,
-  updateDiscount
+  updateDiscount,
+  getDetailDiscount
 };

@@ -38,8 +38,23 @@ const updateProvider = async (req, res) => {
   }
 };
 
+const getDetailProvider = async (req, res) => {
+  const {id_provider} = req.params
+  try {
+    const item = await Provider.findOne({
+      where: {
+        id_provider
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
 module.exports = {
     getAllProvider,
+    getDetailProvider,
     createProvider,
     updateProvider
 };

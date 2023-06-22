@@ -188,12 +188,44 @@ const updateImportInvoice = async (req, res) => {
   }
 };
 
+const getDetailImportInvoice = async (req, res) => {
+  const {id_i_invoice} = req.params
+  try {
+    const item = await Import_invoice.findOne({
+      where: {
+        id_i_invoice
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
+const getDetailImportInvoiceDetail = async (req, res) => {
+  const {id_i_invoice, id_u_ingredient} = req.params
+  try {
+    const item = await Import_invoice_detail.findOne({
+      where: {
+        id_i_invoice,
+        id_u_ingredient
+      }
+    });
+    res.status(200).json({item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
+
 module.exports = {
     getAllImportInvoice,
+    getDetailImportInvoice,
     getAllItemInImportInvoice,
     createImportInvoice,
     updateImportInvoice,
     createImportInvoiceDetail,
     updateImportInvoiceDetail,
-    deleteImportInvoiceDetail
+    deleteImportInvoiceDetail,
+    getDetailImportInvoiceDetail
 };

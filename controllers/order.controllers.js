@@ -199,8 +199,8 @@ const confirmOrder = async (req, res) => {
           break;
         }
       }
-      let j = 0;
       if (check == 0) {
+        let j = 0;
         while (itemListInOrder[j]) {
           await Order.sequelize.query(
             "UPDATE item_stores SET quantity = quantity - (:quantity) WHERE id_item = :id_item AND id_store = :id_store",
@@ -210,11 +210,11 @@ const confirmOrder = async (req, res) => {
                 quantity: itemListInOrder[j].quantity,
                 id_store: staff[0].id_store,
               },
-              type: QueryTypes.SELECT,
+              type: QueryTypes.UPDATE,
               raw: true,
             }
           );
-          i++;
+          j++;
         }
         order.status = 1;
         await order.save();
