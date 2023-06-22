@@ -5,7 +5,7 @@ const getAllPaymentMethod = async (req, res) => {
     const paymentList = await Payment_method.findAll({});
     res.status(201).json({paymentList});
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

@@ -240,7 +240,7 @@ const getAllItem = async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -257,7 +257,7 @@ const getDetailItem = async (req, res) => {
     );
     res.status(200).json({ item });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -272,7 +272,7 @@ const get3ItemsEachType = async (req, res) => {
     );
     res.status(200).json(itemsEachType);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -289,7 +289,7 @@ const getItems = async (req, res) => {
     );
     res.status(200).json({ items });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -304,7 +304,7 @@ const getTopping = async (req, res) => {
     );
     res.status(200).json({ items });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -367,7 +367,7 @@ const processingItem = async (req, res) => {
       res.status(401).json({message: "Số lượng nguyên liệu không đủ!"});
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

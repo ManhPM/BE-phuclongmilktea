@@ -46,7 +46,7 @@ const getAllIngredient = async (req, res) => {
     );
     res.status(201).json({totalItems: totalItems[0].total, itemList});
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -108,7 +108,7 @@ const processingIngredient = async (req, res) => {
       res.status(401).json({message: "Số lượng nguyên liệu không đủ!"});
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

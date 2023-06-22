@@ -12,7 +12,7 @@ const createImportInvoiceDetail = async (req, res) => {
     });
     res.status(200).json({ message: "Tạo mới thành công!" });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -41,7 +41,7 @@ const updateImportInvoiceDetail = async (req, res) => {
         .json({ message: "Không thể cập nhật hoá đơn đã hoàn thành!" });
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -65,7 +65,7 @@ const deleteImportInvoiceDetail = async (req, res) => {
       res.status(400).json({ message: "Không thể xoá hoá đơn đã hoàn thành!" });
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

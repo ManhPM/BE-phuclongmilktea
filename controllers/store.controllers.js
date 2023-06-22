@@ -6,7 +6,7 @@ const getAllStore = async (req, res) => {
     const storeList = await Store.findAll({});
     res.status(201).json({storeList});
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -21,7 +21,7 @@ const getAllStoreForUser = async (req, res) => {
     );
     res.status(201).json({storeList});
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

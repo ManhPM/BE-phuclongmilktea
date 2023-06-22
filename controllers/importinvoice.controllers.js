@@ -42,7 +42,7 @@ const getAllImportInvoice = async (req, res) => {
         res.status(200).json({ importInvoiceList });
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -67,7 +67,7 @@ const getAllItemInImportInvoice = async (req, res) => {
     );
   res.status(200).json({ importinvoice, itemInImportInvoiceList });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -87,7 +87,7 @@ const createImportInvoice = async (req, res) => {
     await Import_invoice.create({id_provider, description, id_staff: staff[0].id_staff, datetime, status: 0})
   res.status(200).json({ message: "Tạo mới thành công!" });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -97,7 +97,7 @@ const createImportInvoiceDetail = async (req, res) => {
     await Import_invoice_detail.create({id_i_invoice, id_u_ingredient, quantity})
   res.status(200).json({ message: "Tạo mới thành công!" });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -126,7 +126,7 @@ const updateImportInvoiceDetail = async (req, res) => {
     }
   
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -151,7 +151,7 @@ const deleteImportInvoiceDetail = async (req, res) => {
       res.status(200).json({ message: "Không thể xoá hoá đơn đã hoàn thành!" });
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
@@ -184,7 +184,7 @@ const updateImportInvoice = async (req, res) => {
     }
   
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

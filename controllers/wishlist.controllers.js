@@ -13,7 +13,7 @@ const getAllItemInWishList = async (req, res) => {
     );
     res.status(200).json(itemList);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

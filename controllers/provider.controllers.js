@@ -5,7 +5,7 @@ const getAllProvider = async (req, res) => {
     const prodiverList = await Provider.findAll({});
     res.status(201).json({prodiverList});
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

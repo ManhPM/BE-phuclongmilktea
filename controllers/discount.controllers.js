@@ -5,7 +5,7 @@ const getAllDiscount = async (req, res) => {
     const discountList = await Discount.findAll({});
     res.status(201).json({discountList});
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

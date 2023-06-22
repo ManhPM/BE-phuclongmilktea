@@ -13,7 +13,7 @@ const getAllUnprocessedIngredient = async (req, res) => {
     const itemList = await Unprocessed_ingredient.findAll({});
     res.status(201).json({totalItems: totalItems[0].total, itemList});
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
