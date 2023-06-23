@@ -35,16 +35,56 @@ const updateIngredient = async (req, res) => {
 };
 
 const getAllIngredient = async (req, res) => {
+  const {name} = req.query
   try {
-    const itemList = await Ingredient.findAll({});
-    const totalItems = await Ingredient.sequelize.query(
-      "SELECT COUNT(*) as total FROM ingredients",
-      {
-        type: QueryTypes.SELECT,
-        raw: true,
-      }
-    );
-    res.status(201).json({totalItems: totalItems[0].total, itemList});
+    const perPage = 12;
+    const page = req.params.page || 1;
+    if(name){
+      const itemList = await Ingredient.sequelize.query(
+        "SELECT * FROM ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
+        {
+          replacements: {
+            name: `%${name}%`,
+            from: (page - 1) * perPage,
+            perPage: perPage,
+          },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const totalItems = await Ingredient.sequelize.query(
+        "SELECT COUNT(*) as total FROM ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
+        {
+          replacements: {
+            name: `%${name}%`,
+          },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res.status(201).json({totalItems: totalItems[0].total, itemList});
+    }
+    else{
+      const itemList = await Ingredient.sequelize.query(
+        "SELECT * FROM ingredients LIMIT :from,:perPage",
+        {
+          replacements: {
+            from: (page - 1) * perPage,
+            perPage: perPage,
+          },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const totalItems = await Ingredient.sequelize.query(
+        "SELECT COUNT(*) as total FROM ingredients",
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res.status(201).json({totalItems: totalItems[0].total, itemList});
+    }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

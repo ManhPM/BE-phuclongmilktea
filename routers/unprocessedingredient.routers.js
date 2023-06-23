@@ -7,6 +7,7 @@ const { checkCreateUnprocessedIngredient } = require("../middlewares/validates/c
 const unprocessedIngredientRouter = express.Router();
 
 unprocessedIngredientRouter.get("/", getAllUnprocessedIngredient);
+unprocessedIngredientRouter.get("/page/:page", getAllUnprocessedIngredient);
 unprocessedIngredientRouter.get("/detail/:id_u_ingredient", authenticate, authorize(["Admin"]), getDetailUnprocessedIngredient);
 unprocessedIngredientRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateUnprocessedIngredient(Unprocessed_ingredient), createUnprocessedIngredient);
 unprocessedIngredientRouter.put("/update/:id_u_ingredient", authenticate, authorize(["Admin"]), updateUnprocessedIngredient);

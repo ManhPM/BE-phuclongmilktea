@@ -6,6 +6,7 @@ const {authenticate} = require("../middlewares/auth/authenticate.js");
 const { checkCreateIngredient } = require("../middlewares/validates/checkCreate");
 const ingredientRouter = express.Router();
 
+ingredientRouter.get("/page/:page", getAllIngredient);
 ingredientRouter.get("/", getAllIngredient);
 ingredientRouter.get("/detail/:id_ingredient", authenticate, authorize(["Admin"]), getDetailIngredient);
 ingredientRouter.post("/process/:id_ingredient", authenticate, authorize(["Nhân viên"]), processingIngredient);
