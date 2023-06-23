@@ -5,10 +5,10 @@ const {authenticate} = require("../middlewares/auth/authenticate.js");
 const { checkCreateImportInvoiceDetail } = require("../middlewares/validates/checkCreate");
 const importinvoiceDetailRouter = express.Router();
 
-importinvoiceDetailRouter.get("/detail/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Admin"]), getDetailImportInvoiceDetail);
-importinvoiceDetailRouter.post("/", authenticate, authorize(["Admin"]), checkCreateImportInvoiceDetail, createImportInvoiceDetail);
-importinvoiceDetailRouter.put("/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Admin"]), updateImportInvoiceDetail);
-importinvoiceDetailRouter.delete("/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Admin"]), deleteImportInvoiceDetail);
+importinvoiceDetailRouter.get("/detail/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), getDetailImportInvoiceDetail);
+importinvoiceDetailRouter.post("/", authenticate, authorize(["Quản lý"]), checkCreateImportInvoiceDetail, createImportInvoiceDetail);
+importinvoiceDetailRouter.put("/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), updateImportInvoiceDetail);
+importinvoiceDetailRouter.delete("/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), deleteImportInvoiceDetail);
 
 module.exports = {
     importinvoiceDetailRouter,

@@ -6,10 +6,10 @@ const {authenticate} = require("../middlewares/auth/authenticate.js");
 const { checkCreateExportInvoiceDetail } = require("../middlewares/validates/checkCreate");
 const exportinvoiceDetailRouter = express.Router();
 
-exportinvoiceDetailRouter.get("/detail/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Admin"]), getDetailExportInvoiceDetail);
-exportinvoiceDetailRouter.post("/", authenticate, authorize(["Admin"]), checkCreateExportInvoiceDetail, createExportInvoiceDetail);
-exportinvoiceDetailRouter.put("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Admin"]), updateExportInvoiceDetail);
-exportinvoiceDetailRouter.delete("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Admin"]), deleteExportInvoiceDetail);
+exportinvoiceDetailRouter.get("/detail/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), getDetailExportInvoiceDetail);
+exportinvoiceDetailRouter.post("/", authenticate, authorize(["Quản lý"]), checkCreateExportInvoiceDetail, createExportInvoiceDetail);
+exportinvoiceDetailRouter.put("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), updateExportInvoiceDetail);
+exportinvoiceDetailRouter.delete("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), deleteExportInvoiceDetail);
 
 module.exports = {  
     exportinvoiceDetailRouter,

@@ -4,11 +4,11 @@ const {authorize} = require("../middlewares/auth/authorize.js")
 const {authenticate} = require("../middlewares/auth/authenticate.js");
 const importinvoiceRouter = express.Router();
 
-importinvoiceRouter.get("/", authenticate, authorize(["Admin"]), getAllImportInvoice);
-importinvoiceRouter.get("/detail/:id_i_invoice", authenticate, authorize(["Admin"]), getDetailImportInvoice);
-importinvoiceRouter.get("/:id_i_invoice", authenticate, authorize(["Admin"]), getAllItemInImportInvoice);
-importinvoiceRouter.post("/", authenticate, authorize(["Admin"]), createImportInvoice);
-importinvoiceRouter.put("/:id_i_invoice", authenticate, authorize(["Admin"]), updateImportInvoice);
+importinvoiceRouter.get("/", authenticate, authorize(["Quản lý"]), getAllImportInvoice);
+importinvoiceRouter.get("/detail/:id_i_invoice", authenticate, authorize(["Quản lý"]), getDetailImportInvoice);
+importinvoiceRouter.get("/:id_i_invoice", authenticate, authorize(["Quản lý"]), getAllItemInImportInvoice);
+importinvoiceRouter.post("/", authenticate, authorize(["Quản lý"]), createImportInvoice);
+importinvoiceRouter.put("/:id_i_invoice", authenticate, authorize(["Quản lý"]), updateImportInvoice);
 
 module.exports = {
     importinvoiceRouter,
