@@ -9,7 +9,6 @@ const createItem = async (req, res) => {
       image,
       name,
       price,
-      quantity: 0,
       status: 1,
     });
     res.status(201).json({ message: "Tạo mới sản phẩm thành công!" });
@@ -60,11 +59,9 @@ const deleteItem = async (req, res) => {
       await itemUpdate.save();
       res.status(200).json({ message: "Xoá sản phẩm thành công!" });
     } else {
-      res
-        .status(400)
-        .json({
-          message: "Xoá sản phẩm thất bại. Còn hoá đơn đang hoạt động!",
-        });
+      res.status(400).json({
+        message: "Xoá sản phẩm thất bại. Còn hoá đơn đang hoạt động!",
+      });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -308,10 +305,9 @@ const getTopping = async (req, res) => {
   }
 };
 
-
 const processingItem = async (req, res) => {
-  const {id_item} = req.params
-  const {quantity} = req.body
+  const { id_item } = req.params;
+  const { quantity } = req.body;
   try {
     const staff = await Item.sequelize.query(
       "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
@@ -324,29 +320,36 @@ const processingItem = async (req, res) => {
     const ingredientList = await Item.sequelize.query(
       "SELECT R.id_item, R.id_ingredient, IG.unit, IG.name as name_ingredient, IG.image, (R.quantity*(:quantity)) as totalquantity, (SELECT quantity FROM ingredient_stores WHERE id_ingredient = R.id_ingredient AND id_store = :id_store) as quantity FROM recipes as R, ingredients as IG WHERE R.id_item = :id_item AND IG.id_ingredient = R.id_ingredient",
       {
-        replacements: { id_item: id_item, quantity: quantity, id_store: staff[0].id_store },
+        replacements: {
+          id_item: id_item,
+          quantity: quantity,
+          id_store: staff[0].id_store,
+        },
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
     let i = 0;
     let isEnough = 1;
-    while(ingredientList[i]){
-      if(ingredientList[i].totalquantity >= ingredientList[i].quantity){
+    while (ingredientList[i]) {
+      if (ingredientList[i].totalquantity >= ingredientList[i].quantity) {
         isEnough = 0;
         break;
-      }
-      else {
+      } else {
         i++;
       }
     }
-    if(isEnough == 1){
+    if (isEnough == 1) {
       let j = 0;
-      while(ingredientList[j]){
+      while (ingredientList[j]) {
         await Item.sequelize.query(
           "UPDATE ingredient_stores SET quantity = quantity - (:quantity) WHERE id_ingredient = :id_ingredient AND id_store = :id_store",
           {
-            replacements: { id_ingredient: ingredientList[j].id_ingredient, quantity: ingredientList[j].totalquantity, id_store: staff[0].id_store },
+            replacements: {
+              id_ingredient: ingredientList[j].id_ingredient,
+              quantity: ingredientList[j].totalquantity,
+              id_store: staff[0].id_store,
+            },
             type: QueryTypes.UPDATE,
             raw: true,
           }
@@ -356,15 +359,19 @@ const processingItem = async (req, res) => {
       await Item.sequelize.query(
         "UPDATE item_stores SET quantity = quantity + (:quantity) WHERE id_item = :id_item AND id_store = :id_store",
         {
-          replacements: { quantity: quantity, id_item, id_item, id_store: staff[0].id_store },
+          replacements: {
+            quantity: quantity,
+            id_item,
+            id_item,
+            id_store: staff[0].id_store,
+          },
           type: QueryTypes.UPDATE,
           raw: true,
         }
       );
-      res.status(201).json({ingredientList});
-    }
-    else {
-      res.status(401).json({message: "Số lượng nguyên liệu không đủ!"});
+      res.status(201).json({ ingredientList });
+    } else {
+      res.status(401).json({ message: "Số lượng nguyên liệu không đủ!" });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -380,5 +387,5 @@ module.exports = {
   deleteItem,
   getItems,
   processingItem,
-  getTopping
+  getTopping,
 };

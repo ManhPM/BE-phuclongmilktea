@@ -6,6 +6,14 @@ const getAllUnprocessedIngredient = async (req, res) => {
   try {
     const perPage = 12;
     const page = req.params.page || 1;
+    const staff = await Unprocessed_ingredient.sequelize.query(
+      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
     if(name){
       const totalItems = await Unprocessed_ingredient.sequelize.query(
         "SELECT COUNT(*) as total FROM unprocessed_ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
@@ -18,9 +26,10 @@ const getAllUnprocessedIngredient = async (req, res) => {
         }
       );
       const itemList = await Unprocessed_ingredient.sequelize.query(
-        "SELECT * FROM unprocessed_ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
+        "SELECT UI.*, US.quantity FROM unprocessed_ingredients as UI, unprocessed_ingredient_stores as US WHERE US.id_store = :id_store AND US.id_u_ingredient = UI.id_u_ingredient AND UI.name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
         {
           replacements: {
+            id_store: staff[0].id_store,
             name: `%${name}%`,
             from: (page - 1) * perPage,
             perPage: perPage,
@@ -40,9 +49,10 @@ const getAllUnprocessedIngredient = async (req, res) => {
         }
       );
       const itemList = await Unprocessed_ingredient.sequelize.query(
-        "SELECT * FROM unprocessed_ingredients LIMIT :from,:perPage",
+        "SELECT UI.*, US.quantity FROM unprocessed_ingredients as UI, unprocessed_ingredient_stores as US WHERE US.id_store = :id_store AND US.id_u_ingredient = UI.id_u_ingredient LIMIT :from,:perPage",
         {
           replacements: {
+            id_store: staff[0].id_store,
             from: (page - 1) * perPage,
             perPage: perPage,
           },

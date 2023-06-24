@@ -6,8 +6,8 @@ const {authorize} = require("../middlewares/auth/authorize.js");
 const { checkCreateUnprocessedIngredient } = require("../middlewares/validates/checkCreate.js");
 const unprocessedIngredientRouter = express.Router();
 
-unprocessedIngredientRouter.get("/", getAllUnprocessedIngredient);
-unprocessedIngredientRouter.get("/page/:page", getAllUnprocessedIngredient);
+unprocessedIngredientRouter.get("/", authenticate, authorize(["Nhân viên","Quản lý"]), getAllUnprocessedIngredient);
+unprocessedIngredientRouter.get("/page/:page", authenticate, authorize(["Nhân viên","Quản lý"]), getAllUnprocessedIngredient);
 unprocessedIngredientRouter.get("/detail/:id_u_ingredient", authenticate, authorize(["Admin"]), getDetailUnprocessedIngredient);
 unprocessedIngredientRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateUnprocessedIngredient(Unprocessed_ingredient), createUnprocessedIngredient);
 unprocessedIngredientRouter.put("/update/:id_u_ingredient", authenticate, authorize(["Admin"]), updateUnprocessedIngredient);
