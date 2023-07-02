@@ -2,12 +2,14 @@ const express = require("express");
 const {Item} = require("../models")
 const {authenticate} = require("../middlewares/auth/authenticate.js")
 const {authorize} = require("../middlewares/auth/authorize.js")
-const {getAllItem, getDetailItem, createItem, updateItem, deleteItem, get3ItemsEachType, getItems, processingItem, getTopping} = require("../controllers/item.controllers");
+const {getAllItem, getDetailItem, createItem, updateItem, deleteItem, get3ItemsEachType, getItems, processingItem, getTopping, getAllItemInStore} = require("../controllers/item.controllers");
 const { checkCreateItem, checkItemValue } = require("../middlewares/validates/checkCreate.js");
 const itemRouter = express.Router();
 
-itemRouter.get("/page/:page", authenticate, getAllItem);
-itemRouter.get("/", authenticate, getAllItem);
+itemRouter.get("/page/:page", getAllItem);
+itemRouter.get("/store/page/:page", authenticate, getAllItemInStore);
+itemRouter.get("/store", authenticate, authorize(["Quản lý","Nhân viên"]), getAllItemInStore);
+itemRouter.get("/", getAllItem);
 itemRouter.get("/get", getItems);
 itemRouter.get("/topping", getTopping);
 itemRouter.get("/category", get3ItemsEachType);
