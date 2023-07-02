@@ -52,7 +52,7 @@ const getAllItemInImportInvoice = async (req, res) => {
   const { id_i_invoice } = req.params;
   try {
     const itemInImportInvoiceList = await Import_invoice.sequelize.query(
-      "SELECT IID.*, UI.name as name_u_ingredient FROM import_invoice_details as IID, import_invoices as II, unprocessed_ingredients as UI WHERE IID.id_i_invoice = II.id_i_invoice AND UI.id_u_ingredient = IID.id_u_ingredient AND II.id_i_invoice = :id_i_invoice",
+      "SELECT IID.*, UI.name as name_u_ingredient, UI.image FROM import_invoice_details as IID, import_invoices as II, unprocessed_ingredients as UI WHERE IID.id_i_invoice = II.id_i_invoice AND UI.id_u_ingredient = IID.id_u_ingredient AND II.id_i_invoice = :id_i_invoice",
       {
         replacements: { id_i_invoice },
         type: QueryTypes.SELECT,

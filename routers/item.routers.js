@@ -6,8 +6,8 @@ const {getAllItem, getDetailItem, createItem, updateItem, deleteItem, get3ItemsE
 const { checkCreateItem, checkItemValue } = require("../middlewares/validates/checkCreate.js");
 const itemRouter = express.Router();
 
-itemRouter.get("/page/:page", authenticate, authorize(["Quản lý","Admin","Nhân viên"]), getAllItem);
-itemRouter.get("/", authenticate, authorize(["Quản lý","Admin","Nhân viên"]), getAllItem);
+itemRouter.get("/page/:page", authenticate, getAllItem);
+itemRouter.get("/", authenticate, getAllItem);
 itemRouter.get("/get", getItems);
 itemRouter.get("/topping", getTopping);
 itemRouter.get("/category", get3ItemsEachType);
