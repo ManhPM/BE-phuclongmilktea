@@ -302,7 +302,7 @@ const checkout = async (req, res) => {
           },
         });
         const cart = await Cart.sequelize.query(
-          "SELECT SUM(quantity) as totalQuantity FROM cart_details WHERE id_cart = :id_cart",
+          "SELECT SUM(C.quantity) as totalQuantity FROM cart_details as C, items as I WHERE C.id_cart = :id_cart AND C.id_item = I.id_item AND I.id_type != 4",
           {
             replacements: { id_cart: info[0].id_cart },
             type: QueryTypes.SELECT,

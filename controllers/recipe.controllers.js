@@ -1,8 +1,9 @@
 const { Recipe, Recipe_ingredient } = require("../models");
 const { QueryTypes } = require("sequelize");
 
-const createRecipe = async (req, res) => {
+const createRecipeItem = async (req, res) => {
   const { id_ingredient, id_item, quantity } = req.body;
+  console.log(id_ingredient,id_item,quantity)
   try {
     await Recipe.create({
         id_ingredient, id_item, quantity 
@@ -13,21 +14,24 @@ const createRecipe = async (req, res) => {
   }
 };
 
-const getAllRecipeOfItem = async (req, res) => {
+const getAllRecipeItem = async (req, res) => {
   const { id_item } = req.params;
   try {
-    const item = await Recipe.findAll({
-      where: {
-        id_item
+    const itemList = await Recipe.sequelize.query(
+      "SELECT R.*, IG.name FROM recipes as R, items as I, ingredients as IG WHERE R.id_item = I.id_item AND R.id_ingredient = IG.id_ingredient AND I.id_item = :id_item",
+      {
+        replacements: { id_item },
+        type: QueryTypes.SELECT,
+        raw: true,
       }
-    })
-    res.status(200).json({ item });
+    );
+    res.status(200).json({ itemList });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 
-const updateRecipe = async (req, res) => {
+const updateRecipeItem = async (req, res) => {
   const { id_ingredient, id_item } = req.params;
   const { quantity } = req.body;
   try {
@@ -45,8 +49,9 @@ const updateRecipe = async (req, res) => {
   }
 };
 
-const deleteRecipe = async (req, res) => {
+const deleteRecipeItem = async (req, res) => {
   const { id_ingredient, id_item } = req.params;
+  console.log(id_ingredient,id_item)
   try {
       await Recipe.destroy({
         where: {
@@ -60,7 +65,7 @@ const deleteRecipe = async (req, res) => {
   }
 };
 
-const getDetailRecipe = async (req, res) => {
+const getDetailRecipeItem = async (req, res) => {
   const { id_ingredient, id_item } = req.params;
   try {
     const item = await Recipe.findOne({
@@ -87,15 +92,18 @@ const createRecipeIngredient = async (req, res) => {
   }
 };
 
-const getAllRecipeOfIngredient = async (req, res) => {
+const getAllRecipeIngredient = async (req, res) => {
   const { id_ingredient } = req.params;
   try {
-    const item = await Recipe_ingredient.findAll({
-      where: {
-        id_ingredient
+    const itemList = await Recipe.sequelize.query(
+      "SELECT RI.*, UI.name FROM recipe_ingredients as RI, ingredients as IG, unprocessed_ingredients as UI WHERE UI.id_u_ingredient = RI.id_u_ingredient AND RI.id_ingredient = IG.id_ingredient AND IG.id_ingredient = :id_ingredient",
+      {
+        replacements: { id_ingredient },
+        type: QueryTypes.SELECT,
+        raw: true,
       }
-    })
-    res.status(200).json({ item });
+    );
+    res.status(200).json({ itemList });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -150,12 +158,14 @@ const getDetailRecipeIngredient = async (req, res) => {
 };
 
 module.exports = {
-    createRecipe,
-    updateRecipe,
-    deleteRecipe,
-    getDetailRecipe,
+    createRecipeItem,
+    updateRecipeItem,
+    deleteRecipeItem,
+    getDetailRecipeItem,
     createRecipeIngredient,
     updateRecipeIngredient,
     deleteRecipeIngredient,
-    getDetailRecipeIngredient
+    getDetailRecipeIngredient,
+    getAllRecipeItem,
+    getAllRecipeIngredient,
 };

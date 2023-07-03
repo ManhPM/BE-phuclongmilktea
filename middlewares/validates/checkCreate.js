@@ -4,7 +4,9 @@ const {
   Staff,
   Discount,
   Import_invoice_detail,
-  Export_invoice_detail
+  Export_invoice_detail,
+  Recipe,
+  Recipe_ingredient
 } = require("../../models");
 const { QueryTypes } = require("sequelize");
 
@@ -250,6 +252,46 @@ const checkDiscountCode = async (req, res, next) => {
   }
 }
 
+const checkCreateRecipeItem = async (req, res, next) => {
+  const {id_item, id_ingredient} = req.body
+  try {
+      const item = await Recipe.findOne({
+        where: {
+          id_item,
+          id_ingredient
+        },
+      });
+      if(item){
+        res.status(400).json({ message: "Công thức đã tồn tại!"});
+      }
+      else {
+        next();
+      }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy raa!" });
+  }
+}
+
+const checkCreateRecipeIngredient = async (req, res, next) => {
+  const {id_u_ingredient, id_ingredient} = req.body
+  try {
+      const item = await Recipe_ingredient.findOne({
+        where: {
+          id_u_ingredient,
+          id_ingredient
+        },
+      });
+      if(item){
+        res.status(400).json({ message: "Công thức đã tồn tại!"});
+      }
+      else {
+        next();
+      }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy raa!" });
+  }
+}
+
 const checkCreateShippingPartner = (Model) => {
   return async (req, res, next) => {
     const { name } = req.body;
@@ -349,5 +391,7 @@ module.exports = {
   checkCreateShippingPartner,
   checkUnConfirmedOrder,
   checkCreateExportInvoiceDetail,
-  checkCreateImportInvoiceDetail
+  checkCreateImportInvoiceDetail,
+  checkCreateRecipeItem,
+  checkCreateRecipeIngredient
 };
