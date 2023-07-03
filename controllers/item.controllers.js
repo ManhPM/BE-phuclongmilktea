@@ -88,7 +88,7 @@ const getAllItemInStore = async (req, res) => {
     if (name) {
       if (id_type) {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND T.id_type = :id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type   AND T.id_type = :id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
           {
             replacements: {
               name: `%${name}%`,
@@ -101,7 +101,7 @@ const getAllItemInStore = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type, SI.quantity FROM item_stores as SI, items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND SI.id_item = I.id_item AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type, SI.quantity FROM item_stores as SI, items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type AND SI.id_item = I.id_item AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 name: `%${name}%`,
@@ -117,7 +117,7 @@ const getAllItemInStore = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type, SI.quantity FROM item_stores as SI, items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND SI.id_item = I.id_item AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type, SI.quantity FROM item_stores as SI, items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type AND SI.id_item = I.id_item AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 name: `%${name}%`,
@@ -134,7 +134,7 @@ const getAllItemInStore = async (req, res) => {
         }
       } else {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
           {
             replacements: { name: `%${name}%`, perPage: perPage },
             type: QueryTypes.SELECT,
@@ -143,7 +143,7 @@ const getAllItemInStore = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type, SI.quantity FROM item_stores as SI items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.id_item = SI.id_item AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type, SI.quantity FROM item_stores as SI items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND I.id_item = SI.id_item AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 name: `%${name}%`,
@@ -158,7 +158,7 @@ const getAllItemInStore = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type, SI.quantity FROM item_stores as SI items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.id_item = SI.id_item AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type, SI.quantity FROM item_stores as SI items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND I.id_item = SI.id_item AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 name: `%${name}%`,
@@ -176,7 +176,7 @@ const getAllItemInStore = async (req, res) => {
     } else {
       if (id_type) {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type",
           {
             replacements: { id_type: id_type },
             type: QueryTypes.SELECT,
@@ -185,7 +185,7 @@ const getAllItemInStore = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT DISTINCT I.*, T.name as name_type, SI.quantity FROM item_stores as SI, items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND SI.id_item = I.id_item AND SI.id_store = :id_store ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT DISTINCT I.*, T.name as name_type, SI.quantity FROM item_stores as SI, items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type AND SI.id_item = I.id_item AND SI.id_store = :id_store ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -200,7 +200,7 @@ const getAllItemInStore = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT DISTINCT I.*, T.name as name_type, SI.quantity FROM item_stores as SI, items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND SI.id_item = I.id_item AND SI.id_store = :id_store ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT DISTINCT I.*, T.name as name_type, SI.quantity FROM item_stores as SI, items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type AND SI.id_item = I.id_item AND SI.id_store = :id_store ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -216,7 +216,7 @@ const getAllItemInStore = async (req, res) => {
         }
       } else {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) AS totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0",
+          "SELECT COUNT(I.id_item) AS totalPage FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0",
           {
             replacements: { perPage: perPage },
             type: QueryTypes.SELECT,
@@ -226,7 +226,7 @@ const getAllItemInStore = async (req, res) => {
         if (typesort == 1) {
           //gia tang dan
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name AS name_type, SI.quantity FROM items as I, types as T, item_stores as SI WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.id_item = SI.id_item AND SI.id_store = :id_store ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name AS name_type, SI.quantity FROM items as I, types as T, item_stores as SI WHERE T.id_type = I.id_type   AND I.status != 0 AND I.id_item = SI.id_item AND SI.id_store = :id_store ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 from: (page - 1) * perPage,
@@ -241,7 +241,7 @@ const getAllItemInStore = async (req, res) => {
         } else {
           // gia giam dan
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name AS name_type, SI.quantity FROM items as I, types as T, item_stores as SI WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.id_item = SI.id_item AND SI.id_store = :id_store ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name AS name_type, SI.quantity FROM items as I, types as T, item_stores as SI WHERE T.id_type = I.id_type   AND I.status != 0 AND I.id_item = SI.id_item AND SI.id_store = :id_store ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 from: (page - 1) * perPage,
@@ -273,7 +273,7 @@ const getAllItem = async (req, res) => {
     if (name) {
       if (id_type) {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND T.id_type = :id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type   AND T.id_type = :id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
           {
             replacements: {
               name: `%${name}%`,
@@ -286,7 +286,7 @@ const getAllItem = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -302,7 +302,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -319,7 +319,7 @@ const getAllItem = async (req, res) => {
         }
       } else {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
           {
             replacements: { name: `%${name}%`, perPage: perPage },
             type: QueryTypes.SELECT,
@@ -328,7 +328,7 @@ const getAllItem = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 name: `%${name}%`,
@@ -342,7 +342,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 name: `%${name}%`,
@@ -359,7 +359,7 @@ const getAllItem = async (req, res) => {
     } else {
       if (id_type) {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type",
+          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type",
           {
             replacements: { id_type: id_type },
             type: QueryTypes.SELECT,
@@ -368,7 +368,7 @@ const getAllItem = async (req, res) => {
         );
         if (typesort == 1) {
           const itemList = await Item.sequelize.query(
-            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -382,7 +382,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ totalItems: count[0].totalPage, itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: {
                 id_type: id_type,
@@ -397,7 +397,7 @@ const getAllItem = async (req, res) => {
         }
       } else {
         const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) AS totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0",
+          "SELECT COUNT(I.id_item) AS totalPage FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0",
           {
             replacements: { perPage: perPage },
             type: QueryTypes.SELECT,
@@ -407,7 +407,7 @@ const getAllItem = async (req, res) => {
         if (typesort == 1) {
           //gia tang dan
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 ORDER BY I.price ASC LIMIT :from,:perPage",
+            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 ORDER BY I.price ASC LIMIT :from,:perPage",
             {
               replacements: { from: (page - 1) * perPage, perPage: perPage },
               type: QueryTypes.SELECT,
@@ -418,7 +418,7 @@ const getAllItem = async (req, res) => {
         } else {
           // gia giam dan
           const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 ORDER BY I.price DESC LIMIT :from,:perPage",
+            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type   AND I.status != 0 ORDER BY I.price DESC LIMIT :from,:perPage",
             {
               replacements: { from: (page - 1) * perPage, perPage: perPage },
               type: QueryTypes.SELECT,
