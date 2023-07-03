@@ -9,7 +9,7 @@ const typeRouter = express.Router();
 typeRouter.get("/", getAllType);
 typeRouter.get("/detail/:id_type", authenticate, authorize(["Admin"]), getDetailType);
 typeRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateType(Type), createType);
-typeRouter.put("/update/:id_type", authenticate, authorize(["Admin"]), updateType);
+typeRouter.put("/update/:id_type", authenticate, authorize(["Admin"]), checkCreateType(Type), updateType);
 
 module.exports = {
     typeRouter,

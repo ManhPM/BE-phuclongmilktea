@@ -11,7 +11,7 @@ ingredientRouter.get("/", authenticate, authorize(["Nhân viên","Quản lý","A
 ingredientRouter.get("/detail/:id_ingredient", authenticate, authorize(["Admin"]), getDetailIngredient);
 ingredientRouter.post("/process/:id_ingredient", authenticate, authorize(["Nhân viên"]), processingIngredient);
 ingredientRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateIngredient(Ingredient), createIngredient);
-ingredientRouter.put("/update/:id_ingredient", authenticate, authorize(["Admin"]), updateIngredient);
+ingredientRouter.put("/update/:id_ingredient", authenticate, authorize(["Admin"]), checkCreateIngredient(Ingredient), updateIngredient);
 
 module.exports = {
     ingredientRouter,

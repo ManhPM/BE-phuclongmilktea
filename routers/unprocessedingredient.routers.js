@@ -10,7 +10,7 @@ unprocessedIngredientRouter.get("/", authenticate, authorize(["Nhân viên","Qu�
 unprocessedIngredientRouter.get("/page/:page", authenticate, authorize(["Nhân viên","Quản lý","Admin"]), getAllUnprocessedIngredient);
 unprocessedIngredientRouter.get("/detail/:id_u_ingredient", authenticate, authorize(["Admin"]), getDetailUnprocessedIngredient);
 unprocessedIngredientRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateUnprocessedIngredient(Unprocessed_ingredient), createUnprocessedIngredient);
-unprocessedIngredientRouter.put("/update/:id_u_ingredient", authenticate, authorize(["Admin"]), updateUnprocessedIngredient);
+unprocessedIngredientRouter.put("/update/:id_u_ingredient", authenticate, authorize(["Admin"]), checkCreateUnprocessedIngredient(Unprocessed_ingredient), updateUnprocessedIngredient);
 
 module.exports = {
     unprocessedIngredientRouter,

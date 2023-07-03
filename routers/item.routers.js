@@ -15,7 +15,7 @@ itemRouter.get("/topping", getTopping);
 itemRouter.get("/category", get3ItemsEachType);
 itemRouter.get("/detail/:id_item", getDetailItem);
 itemRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateItem(Item), checkItemValue(Item), createItem);
-itemRouter.put("/update/:id_item", authenticate, authorize(["Admin"]), checkItemValue(Item), updateItem);
+itemRouter.put("/update/:id_item", authenticate, authorize(["Admin"]), checkItemValue(Item), checkCreateItem(Item), updateItem);
 itemRouter.delete("/delete/:id_item", authenticate, authorize(["Admin"]), deleteItem);
 itemRouter.post("/:id_item", authenticate, authorize(["Nhân viên"]), processingItem);
 

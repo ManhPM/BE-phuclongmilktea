@@ -8,7 +8,7 @@ const exportinvoiceDetailRouter = express.Router();
 
 exportinvoiceDetailRouter.get("/detail/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), getDetailExportInvoiceDetail);
 exportinvoiceDetailRouter.post("/", authenticate, authorize(["Quản lý"]), checkCreateExportInvoiceDetail, createExportInvoiceDetail);
-exportinvoiceDetailRouter.put("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), updateExportInvoiceDetail);
+exportinvoiceDetailRouter.put("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), checkCreateExportInvoiceDetail, updateExportInvoiceDetail);
 exportinvoiceDetailRouter.delete("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), deleteExportInvoiceDetail);
 
 module.exports = {  

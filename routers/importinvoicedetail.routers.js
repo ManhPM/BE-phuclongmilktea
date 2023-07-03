@@ -7,7 +7,7 @@ const importinvoiceDetailRouter = express.Router();
 
 importinvoiceDetailRouter.get("/detail/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), getDetailImportInvoiceDetail);
 importinvoiceDetailRouter.post("/", authenticate, authorize(["Quản lý"]), checkCreateImportInvoiceDetail, createImportInvoiceDetail);
-importinvoiceDetailRouter.put("/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), updateImportInvoiceDetail);
+importinvoiceDetailRouter.put("/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), checkCreateImportInvoiceDetail, updateImportInvoiceDetail);
 importinvoiceDetailRouter.delete("/:id_i_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), deleteImportInvoiceDetail);
 
 module.exports = {

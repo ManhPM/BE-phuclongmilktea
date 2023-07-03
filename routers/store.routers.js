@@ -10,7 +10,7 @@ storeRouter.get("/user", getAllStoreForUser);
 storeRouter.get("/detail/:id_store", authenticate, authorize(["Admin"]), getDetailStore);
 storeRouter.get("/admin", authenticate, authorize(["Admin"]), getAllStore);
 storeRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateStore(Store), createStore);
-storeRouter.put("/update/:id_store", authenticate, authorize(["Admin"]), updateStore);
+storeRouter.put("/update/:id_store", authenticate, authorize(["Admin"]), checkCreateStore(Store), updateStore);
 storeRouter.put("/updateposition", authenticate, authorize(["Quản lý"]), updatePositionOfStore);
 
 module.exports = {

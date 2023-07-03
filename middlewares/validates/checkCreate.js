@@ -200,6 +200,26 @@ const checkCreateEmail = async (req, res, next) => {
   }
 }
 
+const checkCreateDiscount = async (req, res, next) => {
+  const { code } = req.body
+  try {
+    const item = await Discount.findOne({
+      where: {
+        code,
+      },
+    });
+    if(item){
+      res.status(400).json({ message: "Địa chỉ email đã tồn tại!" });
+    }
+    else {
+      next();
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+}
+
+
 const checkPhoneCheckout = async (req, res, next) => {
   try {
     const info = await Customer.sequelize.query(
@@ -308,6 +328,15 @@ const checkCreateShippingPartner = (Model) => {
   };
 };
 
+const checkValueShippingPartner = async (req, res, next) => {
+  const { unit_price } = req.body;
+    if (unit_price >= 0) {
+      next();
+    } else {
+      res.status(400).json({ message: "Giá trị phải lớn hơn 0!" });
+    }
+};
+
 const checkUnConfirmedOrder = (Model) => {
   return async (req, res, next) => {
     const info = await Customer.sequelize.query(
@@ -393,5 +422,7 @@ module.exports = {
   checkCreateExportInvoiceDetail,
   checkCreateImportInvoiceDetail,
   checkCreateRecipeItem,
-  checkCreateRecipeIngredient
+  checkCreateRecipeIngredient,
+  checkCreateDiscount,
+  checkValueShippingPartner
 };

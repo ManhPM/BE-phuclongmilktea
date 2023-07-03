@@ -9,7 +9,7 @@ const paymentRouter = express.Router();
 paymentRouter.get("/", getAllPaymentMethod);
 paymentRouter.get("/detail/:id_payment", authenticate, authorize(["Admin"]), getDetailPaymentMethod);
 paymentRouter.post("/create", authenticate, authorize(["Admin"]), checkCreatePayment(Payment_method), createPaymentMethod);
-paymentRouter.put("/update/:id_payment", authenticate, authorize(["Admin"]), updatePaymentMethod);
+paymentRouter.put("/update/:id_payment", authenticate, authorize(["Admin"]), checkCreatePayment(Payment_method), updatePaymentMethod);
 
 module.exports = {
     paymentRouter,
