@@ -461,7 +461,7 @@ const forgotPassword = async (req, res) => {
       });
     } else {
       const account = await Account.sequelize.query(
-        "SELECT CU.email, A.* FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username AND A.",
+        "SELECT CU.email, A.* FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username",
         {
           type: QueryTypes.SELECT,
           replacements: {
