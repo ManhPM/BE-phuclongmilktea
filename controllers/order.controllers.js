@@ -1,6 +1,65 @@
 const { Order, Order_detail, Item_store, Report, Report_detail, Account } = require("../models");
 const { QueryTypes } = require("sequelize");
 
+const dashboardManager = async (req, res) => {
+  try {
+    const staff = await Order.sequelize.query(
+      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+      const itemList = await Order_detail.sequelize.query(
+        "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as sold, (SELECT CONCAT(FORMAT((SUM(order_details.quantity)*items.price), 0)) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as total, I.name FROM items as I, order_details as OD, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store GROUP BY I.id_item ORDER BY sold DESC LIMIT 5",
+        {
+          replacements: { id_store: staff[0].id_store },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const orderList = await Order_detail.sequelize.query(
+        "SELECT O.id_order, O.status, C.name, C.phone, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner ORDER BY O.time_order ASC LIMIT 3",
+        {
+          replacements: { id_store: staff[0].id_store },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+
+      const info = await Order_detail.sequelize.query(
+        "SELECT(SELECT COUNT(*) from orders WHERE orders.id_store = :id_store) as total, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 0) as un_confirm, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 4) as finished, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 2) as canceled, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 1) as confirmed, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 3) as delivering",
+        {
+          replacements: { id_store: staff[0].id_store },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const date = new Date();
+      date.setHours(date.getHours() + 7);
+      const chart = await Order_detail.sequelize.query(
+        `SELECT(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 1) as jan,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 2) as feb,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 3) as mar,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 4) as apr,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 5) as may,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 6) as jun,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 7) as jul,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 8) as aug,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 9) as sep,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 10) as oct,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 11) as nov,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 12) as "dec"`,
+        {
+          replacements: { id_store: staff[0].id_store },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const doanhThu = await Order_detail.sequelize.query(
+        "SELECT (SELECT IFNULL(CONCAT(FORMAT(SUM(O.item_fee), 0)),0) FROM orders AS O WHERE O.status = 4 AND O.id_store = 1 AND DAY(O.time_order) = DAY(current_date())) as totalDay, (SELECT IFNULL(CONCAT(FORMAT(SUM(O.item_fee), 0)),0) FROM orders AS O WHERE O.status = 4 AND O.id_store = 1 AND MONTH(O.time_order) = MONTH(current_date())) as totalMonth,(SELECT COUNT(*) FROM orders AS O WHERE O.status = 4 AND O.id_store = 1 AND DAY(O.time_order) = DAY(current_date())) as countOrderDay,(SELECT COUNT(*) FROM orders AS O WHERE O.status = 4 AND O.id_store = 1 AND MONTH(O.time_order) = MONTH(current_date())) as countOrderMonth",
+        {
+          replacements: { id_store: staff[0].id_store },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res.status(200).json({orderList, itemList, info:info[0], chart:chart[0], revenue:doanhThu[0]});
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
 const getAllOrder = async (req, res) => {
   const {id_order, status} = req.query
   const account = await Account.findOne({
@@ -674,4 +733,5 @@ module.exports = {
   thongKeDonHangAdmin,
   thongKeSanPhamAdmin,
   createReport,
+  dashboardManager
 };
