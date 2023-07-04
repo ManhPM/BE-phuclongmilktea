@@ -16,7 +16,7 @@ module.exports = {
         id_role: 1,
         username: "user",
         password: "$2a$10$pVN6f.l9WXqsQxifG89kTOewLKmN6BxXjFoqIUra5MIBcc6Z8yhtW",
-        isActive: 0,
+        isActive: 1,
         forgot: 0,
       },
       {

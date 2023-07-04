@@ -26,6 +26,7 @@ const getAllItemInCart = async (req, res) => {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
+
 const createItemInCart = async (req, res) => {
   const { id_item } = req.params;
   const { quantity } = req.body;

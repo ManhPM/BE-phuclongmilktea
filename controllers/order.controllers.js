@@ -1,18 +1,15 @@
-const { Order, Order_detail, Item_store, Report, Report_detail } = require("../models");
+const { Order, Order_detail, Item_store, Report, Report_detail, Account } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const getAllOrder = async (req, res) => {
   const {id_order, status} = req.query
-  const staff = await Order.sequelize.query(
-    "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
-    {
-      replacements: { username: `${req.username}` },
-      type: QueryTypes.SELECT,
-      raw: true,
+  const account = await Account.findOne({
+    where: {
+      username: req.username
     }
-  );
+  })
   try {
-    if (req.id_role == 1) {
+    if (account.id_role == 1) {
       //US
       const customer = await Order.sequelize.query(
         "SELECT CU.* FROM customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account",
@@ -70,7 +67,15 @@ const getAllOrder = async (req, res) => {
           res.status(200).json({ orderList });
         }
       }
-    } else if (req.id_role == 5) {
+    } else if (staff[0].id_role == 5) {
+      const staff = await Order.sequelize.query(
+        "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+        {
+          replacements: { username: `${req.username}` },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
       //AD
       if(status){
         if(id_order){
@@ -121,7 +126,15 @@ const getAllOrder = async (req, res) => {
         }
       }
     } 
-    else if (req.id_role == 3 || req.id_role == 2) {
+    else if (staff[0].id_role == 3 || staff[0].id_role == 2) {
+      const staff = await Order.sequelize.query(
+        "SELECT S.*, A.id_role FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+        {
+          replacements: { username: `${req.username}` },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
       // NV
       if(status){
         if(id_order){
