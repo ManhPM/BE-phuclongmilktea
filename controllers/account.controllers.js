@@ -176,6 +176,7 @@ const loginStaff = async (req, res) => {
         refreshToken,
         expireTimeToken: 15 * 24 * 60 * 60,
         expireTimeRefreshToken: 30 * 24 * 60 * 30,
+        id_role: account.id_role,
       });
     } else {
       res.status(400).json({ message: "Sai thông tin đăng nhập!" });
@@ -209,6 +210,7 @@ const loginAdmin = async (req, res) => {
         refreshToken,
         expireTimeToken: 15 * 24 * 60 * 60,
         expireTimeRefreshToken: 30 * 24 * 60 * 60,
+        id_role: account.id_role,
       });
     } else {
       res.status(400).json({ message: "Sai thông tin đăng nhập!" });
@@ -290,6 +292,7 @@ const login = async (req, res) => {
       userInfo: customer,
       expireTimeToken: 15 * 60 * 60 * 24,
       expireTimeRefreshToken: 30 * 60 * 60 * 24,
+      id_role: account.id_role,
     });
   } else {
     res.status(400).json({ message: "Sai thông tin đăng nhập!" });
@@ -410,7 +413,7 @@ const changePassword = async (req, res) => {
     if (isAuth) {
       if (newPassword == repeatPassword) {
         if (newPassword == oldPassword) {
-          res.status(400).json({
+          res.status(400).send({
             message: "Mật khẩu mới không được giống với mật khẩu cũ!",
           });
         } else {
