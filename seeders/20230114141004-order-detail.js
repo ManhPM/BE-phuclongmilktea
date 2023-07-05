@@ -23,6 +23,26 @@ module.exports = {
         quantity: 1,
       },
       {
+        id_order: 1,
+        id_item: 3,
+        quantity: 1,
+      },
+      {
+        id_order: 1,
+        id_item: 4,
+        quantity: 1,
+      },
+      {
+        id_order: 1,
+        id_item: 5,
+        quantity: 1,
+      },
+      {
+        id_order: 2,
+        id_item: 1,
+        quantity: 1,
+      },
+      {
         id_order: 2,
         id_item: 2,
         quantity: 1,
@@ -33,6 +53,26 @@ module.exports = {
         quantity: 1,
       },
       {
+        id_order: 2,
+        id_item: 4,
+        quantity: 1,
+      },
+      {
+        id_order: 2,
+        id_item: 5,
+        quantity: 1,
+      },
+      {
+        id_order: 3,
+        id_item: 1,
+        quantity: 1,
+      },
+      {
+        id_order: 3,
+        id_item: 2,
+        quantity: 1,
+      },
+      {
         id_order: 3,
         id_item: 3,
         quantity: 1,
@@ -40,6 +80,21 @@ module.exports = {
       {
         id_order: 3,
         id_item: 4,
+        quantity: 1,
+      },
+      {
+        id_order: 3,
+        id_item: 5,
+        quantity: 1,
+      },
+      {
+        id_order: 4,
+        id_item: 1,
+        quantity: 1,
+      },
+      {
+        id_order: 4,
+        id_item: 2,
         quantity: 1,
       },
       {
@@ -53,6 +108,21 @@ module.exports = {
         quantity: 1,
       },
       {
+        id_order: 4,
+        id_item: 5,
+        quantity: 1,
+      },
+      {
+        id_order: 5,
+        id_item: 1,
+        quantity: 1,
+      },
+      {
+        id_order: 5,
+        id_item: 2,
+        quantity: 1,
+      },
+      {
         id_order: 5,
         id_item: 3,
         quantity: 1,
@@ -60,6 +130,21 @@ module.exports = {
       {
         id_order: 5,
         id_item: 4,
+        quantity: 1,
+      },
+      {
+        id_order: 5,
+        id_item: 5,
+        quantity: 1,
+      },
+      {
+        id_order: 6,
+        id_item: 1,
+        quantity: 1,
+      },
+      {
+        id_order: 6,
+        id_item: 2,
         quantity: 1,
       },
       {
@@ -73,6 +158,21 @@ module.exports = {
         quantity: 1,
       },
       {
+        id_order: 6,
+        id_item: 5,
+        quantity: 1,
+      },
+      {
+        id_order: 7,
+        id_item: 1,
+        quantity: 1,
+      },
+      {
+        id_order: 7,
+        id_item: 2,
+        quantity: 1,
+      },
+      {
         id_order: 7,
         id_item: 3,
         quantity: 1,
@@ -80,6 +180,11 @@ module.exports = {
       {
         id_order: 7,
         id_item: 4,
+        quantity: 1,
+      },
+      {
+        id_order: 7,
+        id_item: 5,
         quantity: 1,
       },
     ]);

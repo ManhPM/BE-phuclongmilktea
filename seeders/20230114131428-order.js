@@ -19,8 +19,8 @@ module.exports = {
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 25000,
-        item_fee: 125000,
-        total: 150000,
+        item_fee: 305000,
+        total: 330000,
         status: 1
       },
       {
@@ -30,8 +30,8 @@ module.exports = {
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 25000,
-        item_fee: 125000,
-        total: 150000,
+        item_fee: 305000,
+        total: 330000,
         status: 1
       },
       {
@@ -41,8 +41,8 @@ module.exports = {
         id_shipping_partner: 2,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 25000,
-        item_fee: 110000,
-        total: 135000,
+        item_fee: 305000,
+        total: 330000,
         status: 4
       },
       {
@@ -52,8 +52,8 @@ module.exports = {
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 0,
-        item_fee: 0,
-        total: 0,
+        item_fee: 305000,
+        total: 305000,
         status: 4
       },
       {
@@ -63,8 +63,8 @@ module.exports = {
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 0,
-        item_fee: 0,
-        total: 0,
+        item_fee: 305000,
+        total: 305000,
         status: 4
       },
       {
@@ -74,8 +74,8 @@ module.exports = {
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 0,
-        item_fee: 0,
-        total: 0,
+        item_fee: 305000,
+        total: 305000,
         status: 4
       },
       {
@@ -85,8 +85,8 @@ module.exports = {
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
         delivery_fee: 0,
-        item_fee: 0,
-        total: 0,
+        item_fee: 305000,
+        total: 305000,
         status: 4
       },
     ]);

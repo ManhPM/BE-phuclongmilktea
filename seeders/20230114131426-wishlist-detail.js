@@ -25,6 +25,18 @@ module.exports = {
         id_wishlist: 1,
       },
       {
+        id_item: 4,
+        id_wishlist: 1,
+      },
+      {
+        id_item: 9,
+        id_wishlist: 1,
+      },
+      {
+        id_item: 15,
+        id_wishlist: 1,
+      },
+      {
         id_item: 7,
         id_wishlist: 2,
       },
@@ -34,6 +46,18 @@ module.exports = {
       },
       {
         id_item: 11,
+        id_wishlist: 2,
+      },
+      {
+        id_item: 15,
+        id_wishlist: 2,
+      },
+      {
+        id_item: 20,
+        id_wishlist: 2,
+      },
+      {
+        id_item: 22,
         id_wishlist: 2,
       },
     ]);

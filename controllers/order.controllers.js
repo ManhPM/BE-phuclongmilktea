@@ -126,66 +126,8 @@ const getAllOrder = async (req, res) => {
           res.status(200).json({ orderList });
         }
       }
-    } else if (staff[0].id_role == 5) {
-      const staff = await Order.sequelize.query(
-        "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
-        {
-          replacements: { username: `${req.username}` },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      //AD
-      if(status){
-        if(id_order){
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_order = :id_order AND O.id_store = :id_store",
-            {
-              replacements: { status, id_order, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ orderList });
-        }
-        else{
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_store = :id_store",
-            {
-              replacements: { status, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ orderList });
-        }
-      }
-      else{
-        if(id_order){
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order AND O.id_store = :id_store",
-            {
-              replacements: { id_order, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ orderList });
-        }
-        else{
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.status ASC",
-            {
-              replacements: { id_order, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ orderList });
-        }
-      }
-    } 
-    else if (staff[0].id_role == 3 || staff[0].id_role == 2) {
+    }
+    else{
       const staff = await Order.sequelize.query(
         "SELECT S.*, A.id_role FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
         {
@@ -194,75 +136,137 @@ const getAllOrder = async (req, res) => {
           raw: true,
         }
       );
-      // NV
-      if(status){
-        if(id_order){
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_order = :id_order AND O.id_store = :id_store",
-            {
-              replacements: { id_order, status, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ orderList });
+      console.log(staff[0])
+      if(staff[0].id_role == 5) {
+        //AD
+        if(status){
+          if(id_order){
+            const orderList = await Order.sequelize.query(
+              "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_order = :id_order AND O.id_store = :id_store",
+              {
+                replacements: { status, id_order, id_store: staff[0].id_store },
+                type: QueryTypes.SELECT,
+                raw: true,
+              }
+            );
+            res.status(200).json({ orderList });
+          }
+          else{
+            const orderList = await Order.sequelize.query(
+              "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_store = :id_store",
+              {
+                replacements: { status, id_store: staff[0].id_store },
+                type: QueryTypes.SELECT,
+                raw: true,
+              }
+            );
+            res.status(200).json({ orderList });
+          }
         }
         else{
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_store = :id_store ORDER BY O.time_order DESC, O.status ASC",
-            {
-              replacements: { status, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ orderList });
+          if(id_order){
+            const orderList = await Order.sequelize.query(
+              "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order AND O.id_store = :id_store",
+              {
+                replacements: { id_order, id_store: staff[0].id_store },
+                type: QueryTypes.SELECT,
+                raw: true,
+              }
+            );
+            res.status(200).json({ orderList });
+          }
+          else{
+            const orderList = await Order.sequelize.query(
+              "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.status ASC",
+              {
+                replacements: { id_order, id_store: staff[0].id_store },
+                type: QueryTypes.SELECT,
+                raw: true,
+              }
+            );
+            res.status(200).json({ orderList });
+          }
         }
-      }
-      else{
-        if(id_order){
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order AND O.id_store = :id_store",
-            {
-              replacements: { id_order, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ orderList });
+      } 
+      else if (staff[0].id_role == 3 || staff[0].id_role == 2) {
+        const staff = await Order.sequelize.query(
+          "SELECT S.*, A.id_role FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+          {
+            replacements: { username: `${req.username}` },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        // NV
+        if(status){
+          if(id_order){
+            const orderList = await Order.sequelize.query(
+              "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_order = :id_order AND O.id_store = :id_store",
+              {
+                replacements: { id_order, status, id_store: staff[0].id_store },
+                type: QueryTypes.SELECT,
+                raw: true,
+              }
+            );
+            res.status(200).json({ orderList });
+          }
+          else{
+            const orderList = await Order.sequelize.query(
+              "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_store = :id_store ORDER BY O.time_order DESC, O.status ASC",
+              {
+                replacements: { status, id_store: staff[0].id_store },
+                type: QueryTypes.SELECT,
+                raw: true,
+              }
+            );
+            res.status(200).json({ orderList });
+          }
         }
         else{
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.time_order DESC, O.status ASC",
-            {
-              replacements: { id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ orderList });
+          if(id_order){
+            const orderList = await Order.sequelize.query(
+              "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order AND O.id_store = :id_store",
+              {
+                replacements: { id_order, id_store: staff[0].id_store },
+                type: QueryTypes.SELECT,
+                raw: true,
+              }
+            );
+            res.status(200).json({ orderList });
+          }
+          else{
+            const orderList = await Order.sequelize.query(
+              "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, C.address, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.time_order DESC, O.status ASC",
+              {
+                replacements: { id_store: staff[0].id_store },
+                type: QueryTypes.SELECT,
+                raw: true,
+              }
+            );
+            res.status(200).json({ orderList });
+          }
         }
+      } else {
+        // SP
+        const shipper = await Order.sequelize.query(
+          "SELECT S.* FROM shippers as S, accounts as A WHERE A.username = :username AND S.id_account = A.id_account",
+          {
+            replacements: { username: `${req.username}` },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        const orderList = await Order.sequelize.query(
+          "SELECT O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.address, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers AS S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status != 1 AND O.status != 2 AND O.status != 0 AND O.id_shipping_partner = S.id_shipping_partner AND O.id_shipper = :id_shipper ORDER BY O.time_order DESC",
+          {
+            replacements: { id_shipper: shipper[0].id_shipper },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        res.status(200).json({ orderList });
       }
-    } else {
-      // SP
-      const shipper = await Order.sequelize.query(
-        "SELECT S.* FROM shippers as S, accounts as A WHERE A.username = :username AND S.id_account = A.id_account",
-        {
-          replacements: { username: `${req.username}` },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      const orderList = await Order.sequelize.query(
-        "SELECT O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.address, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers AS S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status != 1 AND O.status != 2 AND O.status != 0 AND O.id_shipping_partner = S.id_shipping_partner AND O.id_shipper = :id_shipper ORDER BY O.time_order DESC",
-        {
-          replacements: { id_shipper: shipper[0].id_shipper },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      res.status(200).json({ orderList });
-    }
+    } 
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
