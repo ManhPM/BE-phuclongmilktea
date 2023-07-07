@@ -80,7 +80,7 @@ const getDetailImportInvoiceDetail = async (req, res) => {
         raw: true,
       }
     );
-    res.status(200).json({ item });
+    res.status(200).json({ item: item[0] });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
