@@ -33,12 +33,10 @@ const checkCreateAccount = (Model) => {
 const checkCreateItem = (Model) => {
   try {
     return async (req, res, next) => {
-      const { name, price, id_type } = req.body;
+      const { name } = req.body;
       const item = await Model.findOne({
         where: {
           name,
-          price,
-          id_type,
         },
       });
       if (!item) {
