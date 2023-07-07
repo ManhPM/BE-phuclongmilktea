@@ -6,7 +6,7 @@ module.exports = {
       {
         storeLat: "10.85025804481258",
         storeLng: "106.76530384273872",
-        name: "Cửa Hàng 1",
+        name: "Phúc Long Estella Place",
         address: "1012 Kha Vạn Cân, Phường Linh Chiểu, TP. Thủ Đức",
         phone: "028 3811 5555",
         email: "phuclongmilktea1@gmail.com",
@@ -15,7 +15,7 @@ module.exports = {
       {
         storeLat: "10.65025804481258",
         storeLng: "106.46530384273872",
-        name: "Cửa Hàng 2",
+        name: "Phúc Long Thiso Mal",
         address: "Khu Công nghệ cao TP.HCM (SHTP), Xa lộ Hà Nội, Phường Hiệp Phú, TP. Thủ Đức",
         phone: "028 3811 5555",
         email: "phuclongmilktea2@gmail.com",

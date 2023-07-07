@@ -53,7 +53,6 @@ app.get('/', (req,res) => {
   })
 })
 app.post('/payment', (req,res) => {
-  console.log(req.body)
   stripe.customers.create({
     email: req.body.stripeEmail,
     source: req.body.stripeToken,

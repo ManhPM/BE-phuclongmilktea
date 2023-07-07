@@ -1,15 +1,25 @@
-const e = require("express");
-const { Ingredient, Staff } = require("../models");
+const { Ingredient, Store, Ingredient_store} = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const createIngredient = async (req, res) => {
   const { name, unit, image } = req.body;
   try {
-    await Ingredient.create({
+    const ingredient = await Ingredient.create({
       name,
       unit,
       image,
     });
+    const store = await Store.findAll({
+    })
+    let i = 0
+    while(store[i]){
+      await Ingredient_store.create({
+        id_ingredient: ingredient.id_ingredient,
+        id_store: store[i].id_store,
+        quantity: 0
+      })
+      i++
+    }
     res.status(200).json({ message: "Tạo mới thành công!" });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });

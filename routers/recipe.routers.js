@@ -5,8 +5,8 @@ const { checkCreateRecipeItem, checkCreateRecipeIngredient } = require("../middl
 const { getDetailRecipeItem, getDetailRecipeIngredient, createRecipeItem, getAllRecipeItem, getAllRecipeIngredient, createRecipeIngredient, updateRecipeItem, updateRecipeIngredient, deleteRecipeItem, deleteRecipeIngredient } = require("../controllers/recipe.controllers");
 const recipeRouter = express.Router();
 
-recipeRouter.get("/item/:id_item", authenticate, authorize(["Admin"]), getAllRecipeItem);
-recipeRouter.get("/ingredient/:id_ingredient", authenticate, authorize(["Admin"]), getAllRecipeIngredient);
+recipeRouter.get("/item/:id_item", authenticate, authorize(["Admin","Quản lý","Nhân viên"]), getAllRecipeItem);
+recipeRouter.get("/ingredient/:id_ingredient", authenticate, authorize(["Admin","Quản lý","Nhân viên"]), getAllRecipeIngredient);
 recipeRouter.get("/item/detail/:id_item/:id_ingredient", authenticate, authorize(["Admin"]), getDetailRecipeItem);
 recipeRouter.get("/ingredient/detail/:id_ingredient/:id_u_ingredient", authenticate, authorize(["Admin"]), getDetailRecipeIngredient);
 recipeRouter.post("/item/create", authenticate, authorize(["Admin"]), checkCreateRecipeItem, createRecipeItem);

@@ -6,7 +6,7 @@ const {
   Order_detail,
   Store,
   Discount,
-  Shipping_partner
+  Shipping_partner,
 } = require("../models");
 const { QueryTypes } = require("sequelize");
 const { sequelize } = require("../models");
@@ -141,13 +141,13 @@ const getDeliFee = async (req, res) => {
   try {
     const store = await Store.findOne({
       where: {
-        id_store
-      }
+        id_store,
+      },
     });
     const shipping_partner = await Shipping_partner.findOne({
       where: {
-        id_shipping_partner
-      }
+        id_shipping_partner,
+      },
     });
     const storeLat = store.storeLat;
     const storeLng = store.storeLng;
@@ -254,7 +254,7 @@ const checkout = async (req, res) => {
         id_cart: info[0].id_cart,
       },
     });
-    if (itemInCartList.length){
+    if (itemInCartList.length) {
       const store = await Cart.sequelize.query(
         "SELECT id_store, name, address, phone, email, storeLng, storeLat, 6371 * ACOS(COS(RADIANS(:userLng)) * COS(RADIANS(storeLat)) * COS(RADIANS(storeLng) - RADIANS(:userLat)) + SIN(RADIANS(:userLng)) * SIN(RADIANS(storeLat))) AS distance FROM stores ORDER BY distance ASC LIMIT 1",
         {
@@ -265,8 +265,8 @@ const checkout = async (req, res) => {
       );
       const shipping_partner = await Shipping_partner.findOne({
         where: {
-          id_shipping_partner
-        }
+          id_shipping_partner,
+        },
       });
       const date = new Date();
       date.setHours(date.getHours() + 7);
@@ -313,13 +313,85 @@ const checkout = async (req, res) => {
         if (cart[0].totalQuantity >= discount.min_quantity) {
           discount.quantity = discount.quantity - 1;
           await discount.save();
+          if (id_payment == 1) {
+            const newOrder = await Order.create({
+              description,
+              id_payment,
+              delivery_fee: random,
+              item_fee: Number(total[0].item_fee),
+              total:
+                Number(total[0].item_fee) -
+                (Number(total[0].item_fee) * discount.discount_percent) / 100 +
+                random,
+              discount_fee:
+                (Number(total[0].item_fee) * discount.discount_percent) / 100,
+              time_order: date,
+              id_customer: info[0].id_customer,
+              id_shipping_partner,
+              status: 0,
+              id_store: store[0].id_store,
+            });
+            let i = 0;
+            while (itemInCartList[i]) {
+              await Order_detail.create({
+                id_order: newOrder.id_order,
+                id_item: itemInCartList[i].id_item,
+                quantity: itemInCartList[i].quantity,
+              });
+              await Cart_detail.destroy({
+                where: {
+                  id_item: itemInCartList[i].id_item,
+                  id_cart: itemInCartList[i].id_cart,
+                },
+              });
+              i++;
+            }
+            res.status(201).json({ message: "Đặt hàng thành công!" });
+          } else {
+            const newOrder = await Order.create({
+              description,
+              id_payment,
+              delivery_fee: random,
+              item_fee: Number(total[0].item_fee),
+              total: 0,
+              discount_fee:
+                (Number(total[0].item_fee) * discount.discount_percent) / 100,
+              time_order: date,
+              id_customer: info[0].id_customer,
+              id_shipping_partner,
+              status: 0,
+              id_store: store[0].id_store,
+            });
+            let i = 0;
+            while (itemInCartList[i]) {
+              await Order_detail.create({
+                id_order: newOrder.id_order,
+                id_item: itemInCartList[i].id_item,
+                quantity: itemInCartList[i].quantity,
+              });
+              await Cart_detail.destroy({
+                where: {
+                  id_item: itemInCartList[i].id_item,
+                  id_cart: itemInCartList[i].id_cart,
+                },
+              });
+              i++;
+            }
+            res.status(201).json({ message: "Đặt hàng thành công!" });
+          }
+        } else {
+          res.status(400).json({
+            message: "Số lượng sản phẩm chưa đạt yêu cầu của mã giảm giá!",
+          });
+        }
+      } else {
+        if(id_payment == 1){
           const newOrder = await Order.create({
             description,
             id_payment,
             delivery_fee: random,
             item_fee: Number(total[0].item_fee),
-            total:Number(total[0].item_fee) - (Number(total[0].item_fee) * discount.discount_percent) / 100 + random,
-            discount_fee:(Number(total[0].item_fee) * discount.discount_percent) / 100,
+            total: Number(total[0].item_fee) + random,
             time_order: date,
             id_customer: info[0].id_customer,
             id_shipping_partner,
@@ -342,42 +414,37 @@ const checkout = async (req, res) => {
             i++;
           }
           res.status(201).json({ message: "Đặt hàng thành công!" });
-        } else {
-          res
-            .status(400)
-            .json({
-              message: "Số lượng sản phẩm chưa đạt yêu cầu của mã giảm giá!",
-            });
         }
-      } else {
-        const newOrder = await Order.create({
-          description,
-          id_payment,
-          delivery_fee: random,
-          item_fee: Number(total[0].item_fee),
-          total: Number(total[0].item_fee) + random,
-          time_order: date,
-          id_customer: info[0].id_customer,
-          id_shipping_partner,
-          status: 0,
-          id_store: store[0].id_store,
-        });
-        let i = 0;
-        while (itemInCartList[i]) {
-          await Order_detail.create({
-            id_order: newOrder.id_order,
-            id_item: itemInCartList[i].id_item,
-            quantity: itemInCartList[i].quantity,
+        else{
+          const newOrder = await Order.create({
+            description,
+            id_payment,
+            delivery_fee: random,
+            item_fee: Number(total[0].item_fee),
+            total: 0,
+            time_order: date,
+            id_customer: info[0].id_customer,
+            id_shipping_partner,
+            status: 0,
+            id_store: store[0].id_store,
           });
-          await Cart_detail.destroy({
-            where: {
+          let i = 0;
+          while (itemInCartList[i]) {
+            await Order_detail.create({
+              id_order: newOrder.id_order,
               id_item: itemInCartList[i].id_item,
-              id_cart: itemInCartList[i].id_cart,
-            },
-          });
-          i++;
+              quantity: itemInCartList[i].quantity,
+            });
+            await Cart_detail.destroy({
+              where: {
+                id_item: itemInCartList[i].id_item,
+                id_cart: itemInCartList[i].id_cart,
+              },
+            });
+            i++;
+          }
+          res.status(201).json({ message: "Đặt hàng thành công!" });
         }
-        res.status(201).json({ message: "Đặt hàng thành công!" });
       }
     } else {
       res.status(400).json({ message: "Giỏ hàng của bạn đang trống!" });
@@ -457,5 +524,5 @@ module.exports = {
   checkout,
   checkoutPayment,
   checkoutPayment2,
-  getDeliFee
+  getDeliFee,
 };

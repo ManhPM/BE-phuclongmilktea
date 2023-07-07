@@ -1,16 +1,27 @@
-const { Item, Staff } = require("../models");
+const { Item, Store, Item_store } = require("../models");
 const { QueryTypes, NUMBER } = require("sequelize");
 
 const createItem = async (req, res) => {
   const { id_type, image, name, price } = req.body;
   try {
-    await Item.create({
+    const item = await Item.create({
       id_type,
       image,
       name,
       price,
       status: 1,
     });
+    const store = await Store.findAll({
+    })
+    let i = 0
+    while(store[i]){
+      await Item_store.create({
+        id_item: item.id_item,
+        id_store: store[i].id_store,
+        quantity: 0
+      })
+      i++
+    }
     res.status(201).json({ message: "Tạo mới sản phẩm thành công!" });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -438,7 +449,7 @@ const getDetailItem = async (req, res) => {
   const { id_item } = req.params;
   try {
     const item = await Item.sequelize.query(
-      "SELECT I.*, T.name as name_type, (SELECT COUNT(id_item) FROM items WHERE id_item = I.id_item) as countLike FROM items AS I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.id_item = :id_item",
+      "SELECT I.*, T.name as name_type, (SELECT COUNT(id_item) FROM items WHERE id_item = I.id_item) as countLike FROM items AS I, types as T WHERE T.id_type = I.id_type AND I.id_item = :id_item",
       {
         replacements: { id_item: id_item },
         type: QueryTypes.SELECT,

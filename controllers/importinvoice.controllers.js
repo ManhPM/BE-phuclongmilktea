@@ -17,7 +17,7 @@ const getAllImportInvoice = async (req, res) => {
     );
     if (info[0].id_role == 5) {
       const importInvoiceList = await Import_invoice.sequelize.query(
-        "SELECT II.*, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider",
+        "SELECT II.id_i_invoice, II.status, II.description, DATE_FORMAT(II.datetime, '%d/%m/%Y %H:%i') as datetime, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider",
         {
           type: QueryTypes.SELECT,
           raw: true,
@@ -34,7 +34,7 @@ const getAllImportInvoice = async (req, res) => {
         }
       );
       const importInvoiceList = await Import_invoice.sequelize.query(
-        "SELECT II.*, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider AND II.id_staff = :id_staff",
+        "SELECT II.id_i_invoice, II.status, II.description, DATE_FORMAT(II.datetime, '%d/%m/%Y %H:%i') as datetime, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider AND II.id_staff = :id_staff",
         {
           replacements: { id_staff: staff[0].id_staff },
           type: QueryTypes.SELECT,

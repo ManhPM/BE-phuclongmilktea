@@ -11,164 +11,208 @@ const {
 const { QueryTypes } = require("sequelize");
 
 const checkCreateAccount = (Model) => {
-  return async (req, res, next) => {
-    const { username } = req.body;
-    const account = await Model.findOne({
-      where: {
-        username,
-      },
-    });
-    if (!account) {
-      next();
-    } else {
-      res.status(400).json({ message: "Tài khoản đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { username } = req.body;
+      const account = await Model.findOne({
+        where: {
+          username,
+        },
+      });
+      if (!account) {
+        next();
+      } else {
+        res.status(400).json({ message: "Tài khoản đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
 
 const checkCreateItem = (Model) => {
-  return async (req, res, next) => {
-    const { name, price, id_type } = req.body;
-    const item = await Model.findOne({
-      where: {
-        name,
-        price,
-        id_type,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Sản phẩm đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { name, price, id_type } = req.body;
+      const item = await Model.findOne({
+        where: {
+          name,
+          price,
+          id_type,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Sản phẩm đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
 
 const checkCreateType = (Model) => {
-  return async (req, res, next) => {
-    const { name } = req.body;
-    const item = await Model.findOne({
-      where: {
-        name,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Loại hàng đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { name } = req.body;
+      const item = await Model.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Loại hàng đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
 
 const checkCreateReview = (Model) => {
-  return async (req, res, next) => {
-    const { id_order } = req.query;
-    const order = await Model.findOne({
-      where: {
-        id_order,
-      },
-    });
-    if (order.status == 1) {
-      next();
-    } else {
-      res
-        .status(400)
-        .json({
-          message:
-            "Đơn hàng đã bị huỷ hoặc chưa được xác nhận. Không thể đánh giá!",
-        });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { id_order } = req.query;
+      const order = await Model.findOne({
+        where: {
+          id_order,
+        },
+      });
+      if (order.status == 1) {
+        next();
+      } else {
+        res
+          .status(400)
+          .json({
+            message:
+              "Đơn hàng đã bị huỷ hoặc chưa được xác nhận. Không thể đánh giá!",
+          });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
 
 const checkCreateProvider = (Model) => {
-  return async (req, res, next) => {
-    const { name, phone } = req.body;
-    const item = await Model.findOne({
-      where: {
-        name,
-        phone,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Nhà cung cấp đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { name, phone } = req.body;
+      const item = await Model.findOne({
+        where: {
+          name,
+          phone,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Nhà cung cấp đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
+
 const checkCreateStore = (Model) => {
-  return async (req, res, next) => {
-    const { name, phone, address } = req.body;
-    const item = await Model.findOne({
-      where: {
-        name,
-        address,
-        phone,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Cửa hàng đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { name, phone, address } = req.body;
+      const item = await Model.findOne({
+        where: {
+          name,
+          address,
+          phone,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Cửa hàng đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
+
 const checkCreatePayment = (Model) => {
-  return async (req, res, next) => {
-    const { name } = req.body;
-    const item = await Model.findOne({
-      where: {
-        name,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Phương thức thanh toán đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { name } = req.body;
+      const item = await Model.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Phương thức thanh toán đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
+
 const checkCreateUnprocessedIngredient = (Model) => {
-  return async (req, res, next) => {
-    const { name } = req.body;
-    const item = await Model.findOne({
-      where: {
-        name,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Nguyên liệu thô đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { name } = req.body;
+      const item = await Model.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Nguyên liệu thô đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
+
 const checkCreateIngredient = (Model) => {
-  return async (req, res, next) => {
-    const { name } = req.body;
-    const item = await Model.findOne({
-      where: {
-        name,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Nguyên liệu đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { name } = req.body;
+      const item = await Model.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Nguyên liệu đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
 
 const checkItemValue = (Model) => {
-  return async (req, res, next) => {
-    const { price } = req.body;
-    if (price > 0) {
-      next();
-    } else {
-      res.status(400).json({ message: "Giá phải lớn hơn 0!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { price } = req.body;
+      if (price > 0) {
+        next();
+      } else {
+        res.status(400).json({ message: "Giá phải lớn hơn 0!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
 
 const checkCreateEmail = async (req, res, next) => {
@@ -196,7 +240,7 @@ const checkCreateEmail = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+    res.status(501).json({ message: "Error!" });
   }
 }
 
@@ -215,7 +259,7 @@ const checkCreateDiscount = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+    res.status(501).json({ message: "Error!" });
   }
 }
 
@@ -237,7 +281,7 @@ const checkPhoneCheckout = async (req, res, next) => {
       res.status(400).json({ message: "Vui lòng cập nhật số điện thoại trước khi đặt hàng!" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+    res.status(501).json({ message: "Error!" });
   }
 }
 
@@ -268,7 +312,7 @@ const checkDiscountCode = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    res.status(500).json({ message: "Đã có lỗi xảy raa!" });
+    res.status(501).json({ message: "Error!" });
   }
 }
 
@@ -308,57 +352,69 @@ const checkCreateRecipeIngredient = async (req, res, next) => {
         next();
       }
   } catch (error) {
-    res.status(500).json({ message: "Đã có lỗi xảy raa!" });
+    res.status(501).json({ message: "Error!" });
   }
 }
 
 const checkCreateShippingPartner = (Model) => {
-  return async (req, res, next) => {
-    const { name } = req.body;
-    const item = await Model.findOne({
-      where: {
-        name,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Đơn vị vận chuyển đã tồn tại!" });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { name } = req.body;
+      const item = await Model.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Đơn vị vận chuyển đã tồn tại!" });
+      }
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" })
+  }
 };
 
 const checkValueShippingPartner = async (req, res, next) => {
   const { unit_price } = req.body;
+  try {
     if (unit_price >= 0) {
       next();
     } else {
       res.status(400).json({ message: "Giá trị phải lớn hơn 0!" });
     }
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
 
 const checkUnConfirmedOrder = (Model) => {
-  return async (req, res, next) => {
-    const info = await Customer.sequelize.query(
-      "SELECT C.*, CU.phone FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
-      {
-        replacements: { username: `${req.username}` },
-        type: QueryTypes.SELECT,
-        raw: true,
+  try {
+    return async (req, res, next) => {
+      const info = await Customer.sequelize.query(
+        "SELECT C.*, CU.phone FROM carts as C, customers as CU, accounts as A WHERE A.username = :username AND CU.id_account = A.id_account AND CU.id_customer = C.id_customer",
+        {
+          replacements: { username: `${req.username}` },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const item = await Model.findOne({
+        where: {
+          id_customer: info[0].id_customer,
+          status: 0,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({ message: "Đang có đơn hàng chưa xác nhận, không thể đặt thêm!" });
       }
-    );
-    const item = await Model.findOne({
-      where: {
-        id_customer: info[0].id_customer,
-        status: 0,
-      },
-    });
-    if (!item) {
-      next();
-    } else {
-      res.status(400).json({ message: "Đang có đơn hàng chưa xác nhận, không thể đặt thêm!" });
-    }
-  };
+    };
+  } catch (error) {
+    res.status(501).json({ message: "Error!" });
+  }
 };
 
 const checkCreateImportInvoiceDetail = async (req, res, next) => {
@@ -378,7 +434,7 @@ const checkCreateImportInvoiceDetail = async (req, res, next) => {
         res.status(400).json({ message: "Đã có sản phẩm này trong hoá đơn!" });
       }
     } catch (error) {
-      res.status(501).json({ message: "Đã có lỗi xảy ra!" });
+      res.status(501).json({ message: "Error!" });
     }
 }
 
@@ -399,7 +455,7 @@ const checkCreateExportInvoiceDetail = async (req, res, next) => {
         res.status(400).json({ message: "Đã có sản phẩm này trong hoá đơn!" });
       }
     } catch (error) {
-      res.status(501).json({ message: "Đã có lỗi xảy ra!" });
+      res.status(501).json({ message: "Error!" });
     }
 }
 

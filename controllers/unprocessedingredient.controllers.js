@@ -1,4 +1,4 @@
-const { Unprocessed_ingredient } = require("../models");
+const { Unprocessed_ingredient, Store, Unprocessed_ingredient_store } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const getAllUnprocessedIngredient = async (req, res) => {
@@ -7,7 +7,7 @@ const getAllUnprocessedIngredient = async (req, res) => {
     const perPage = 12;
     const page = req.params.page || 1;
     const staff = await Unprocessed_ingredient.sequelize.query(
-      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+      "SELECT S.*, A.id_role FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
       {
         replacements: { username: `${req.username}` },
         type: QueryTypes.SELECT,
@@ -120,10 +120,21 @@ const getAllUnprocessedIngredient = async (req, res) => {
 const createUnprocessedIngredient= async (req, res) => {
   const {name, unit} = req.body
   try {
-    await Unprocessed_ingredient.create({
+    const unprocessed_ingredient = await Unprocessed_ingredient.create({
       name,
       unit,
     });
+    const store = await Store.findAll({
+    })
+    let i = 0
+    while(store[i]){
+      await Unprocessed_ingredient_store.create({
+        id_u_ingredient: unprocessed_ingredient.id_u_ingredient,
+        id_store: store[i].id_store,
+        quantity: 0
+      })
+      i++
+    }
     res.status(200).json({message: "Tạo mới thành công!"});
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
