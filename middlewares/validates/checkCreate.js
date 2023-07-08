@@ -292,18 +292,23 @@ const checkDiscountCode = async (req, res, next) => {
           code,
         },
       });
-      if(discount.quantity > 0){
-        const date = new Date();
-        date.setHours(date.getHours() + 7);
-        if(discount.end_date >= date){
-          next();
+      if(discount){
+        if(discount.quantity > 0){
+          const date = new Date();
+          date.setHours(date.getHours() + 7);
+          if(discount.end_date >= date){
+            next();
+          }
+          else {
+            res.status(400).json({ message: "Mã giảm giá đã hết hạn sử dụng!" });
+          }
         }
         else {
-          res.status(400).json({ message: "Mã xác nhận đã hết hạn sử dụng!" });
+          res.status(400).json({ message: "Mã giảm giá đã hết lượt sử dụng!"});
         }
       }
-      else {
-        res.status(400).json({ message: "Mã xác nhận đã hết lượt sử dụng!"});
+      else{
+        res.status(400).json({ message: "Mã giảm giá không hợp lệ!"});
       }
     }
     else {
@@ -418,37 +423,37 @@ const checkUnConfirmedOrder = (Model) => {
 const checkCreateImportInvoiceDetail = async (req, res, next) => {
   const {id_u_ingredient, id_i_invoice} = req.body
     try {
-      if(!id_i_invoice){
-        const {id_u_ingredient, id_i_invoice} = req.params
-        const item = await Import_invoice_detail.sequelize.query(
-          "SELECT * FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice AND id_u_ingredient = :id_u_ingredient",
-          {
-            replacements: { id_i_invoice, id_u_ingredient },
-            type: QueryTypes.SELECT,
-            raw: true,
+        if(id_i_invoice){
+          const item = await Import_invoice_detail.sequelize.query(
+            "SELECT * FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice AND id_u_ingredient = :id_u_ingredient",
+            {
+              replacements: { id_i_invoice, id_u_ingredient },
+              type: QueryTypes.SELECT,
+              raw: true,
+            }
+          );
+          if (!item[0]) {
+            next();
+          } else {
+            res.status(400).json({ message: "Đã có sản phẩm này trong hoá đơn!" });
           }
-        );
-        if (!item[0]) {
-          next();
-        } else {
-          res.status(400).json({ message: "Đã có sản phẩm này trong hoá đơn!" });
         }
-      }
-      else{
-        const item = await Import_invoice_detail.sequelize.query(
-          "SELECT * FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice AND id_u_ingredient = :id_u_ingredient",
-          {
-            replacements: { id_i_invoice, id_u_ingredient },
-            type: QueryTypes.SELECT,
-            raw: true,
+        else{
+          const {id_u_ingredient, id_i_invoice} = req.params
+          const item = await Import_invoice_detail.sequelize.query(
+            "SELECT * FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice AND id_u_ingredient = :id_u_ingredient",
+            {
+              replacements: { id_i_invoice, id_u_ingredient },
+              type: QueryTypes.SELECT,
+              raw: true,
+            }
+          );
+          if (!item[0]) {
+            res.status(400).json({ message: "Chi tiết không tồn tại!" });
+          } else {
+            next();
           }
-        );
-        if (!item[0]) {
-          next();
-        } else {
-          res.status(400).json({ message: "Đã có sản phẩm này trong hoá đơn!" });
         }
-      }
     } catch (error) {
       res.status(501).json({ message: "Error!" });
     }
@@ -496,5 +501,5 @@ module.exports = {
   checkCreateRecipeItem,
   checkCreateRecipeIngredient,
   checkCreateDiscount,
-  checkValueShippingPartner
+  checkValueShippingPartner,
 };
