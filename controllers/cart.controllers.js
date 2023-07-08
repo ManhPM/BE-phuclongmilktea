@@ -324,7 +324,7 @@ const checkout = async (req, res) => {
                 (Number(total[0].item_fee) * discount.discount_percent) / 100 +
                 random,
               discount_fee:
-                (Number(total[0].item_fee) * discount.discount_percent) / 100,
+                Math.floor((Number(total[0].item_fee) * discount.discount_percent) / 100),
               time_order: date,
               id_customer: info[0].id_customer,
               id_shipping_partner,

@@ -51,7 +51,7 @@ module.exports = {
         id_store: 1,
         id_shipping_partner: 1,
         time_order: "2023-07-08",
-        delivery_fee: 0,
+        delivery_fee: 30000,
         item_fee: 305000,
         total: 305000,
         status: 4
@@ -62,7 +62,7 @@ module.exports = {
         id_store: 2,
         id_shipping_partner: 1,
         time_order: "2023-07-08",
-        delivery_fee: 0,
+        delivery_fee: 30000,
         item_fee: 305000,
         total: 305000,
         status: 4
@@ -73,7 +73,7 @@ module.exports = {
         id_store: 2,
         id_shipping_partner: 1,
         time_order: "2023-07-08",
-        delivery_fee: 0,
+        delivery_fee: 30000,
         item_fee: 305000,
         total: 305000,
         status: 4
@@ -84,7 +84,7 @@ module.exports = {
         id_store: 2,
         id_shipping_partner: 1,
         time_order: "2023-07-08",
-        delivery_fee: 0,
+        delivery_fee: 30000,
         item_fee: 305000,
         total: 305000,
         status: 4
